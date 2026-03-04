@@ -1,0 +1,155 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 600px;
+                 background-color: #0E1117;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#4CAF50", "font": {"color": "white"}, "id": "giulio-leone", "label": "giulio-leone", "shape": "dot"}, {"color": "#F44336", "font": {"color": "white"}, "id": "fix: preserve tool_use/tool_result pairs in trim_messages", "label": "fix: preserve tool_use/tool_result pairs in trim_messages", "shape": "dot"}, {"color": "#F44336", "font": {"color": "white"}, "id": "fix(openai)", "label": "fix(openai)", "shape": "dot"}, {"color": "#F44336", "font": {"color": "white"}, "id": "fix(core): cancel pending tasks in abatch_as_completed on exception or early exit", "label": "fix(core): cancel pending tasks in abatch_as_completed on exception or early exit", "shape": "dot"}, {"color": "#F44336", "font": {"color": "white"}, "id": "#35436", "label": "#35436", "shape": "dot"}, {"color": "#F44336", "font": {"color": "white"}, "id": "#29637", "label": "#29637", "shape": "dot"}, {"color": "#F44336", "font": {"color": "white"}, "id": "fix(core): guard merge_lists against non-dict elements when matching by index", "label": "fix(core): guard merge_lists against non-dict elements when matching by index", "shape": "dot"}, {"color": "#FFEB3B", "font": {"color": "white"}, "id": "Mistral streaming responses", "label": "Mistral streaming responses", "shape": "dot"}, {"color": "#F44336", "font": {"color": "white"}, "id": "#35486", "label": "#35486", "shape": "dot"}, {"color": "#F44336", "font": {"color": "white"}, "id": "fix(core): make trim_messages respect tool-call group integrity", "label": "fix(core): make trim_messages respect tool-call group integrity", "shape": "dot"}, {"color": "#F44336", "font": {"color": "white"}, "id": "fix(core): fix RunnableRetry.batch position corruption with return_exceptions", "label": "fix(core): fix RunnableRetry.batch position corruption with return_exceptions", "shape": "dot"}, {"color": "#F44336", "font": {"color": "white"}, "id": "issue-123", "label": "issue-123", "shape": "dot"}, {"color": "#FFEB3B", "font": {"color": "white"}, "id": "TypeError: string indices must be integers, not \u0027str\u0027", "label": "TypeError: string indices must be integers, not \u0027str\u0027", "shape": "dot"}, {"color": "#F44336", "font": {"color": "white"}, "id": "disable_streaming=\u0027tool_calling\u0027 causes crash", "label": "disable_streaming=\u0027tool_calling\u0027 causes crash", "shape": "dot"}, {"color": "#F44336", "font": {"color": "white"}, "id": "fix(core): prevent RunnableRetry.batch from returning corrupted outputs on partial failure", "label": "fix(core): prevent RunnableRetry.batch from returning corrupted outputs on partial failure", "shape": "dot"}, {"color": "#F44336", "font": {"color": "white"}, "id": "fix(core): RunnableRetry.batch corrupted outputs on partial retry success", "label": "fix(core): RunnableRetry.batch corrupted outputs on partial retry success", "shape": "dot"}, {"color": "#F44336", "font": {"color": "white"}, "id": "perf(core): use deque for pipeline batch output reassembly in RunnableSequence", "label": "perf(core): use deque for pipeline batch output reassembly in RunnableSequence", "shape": "dot"}, {"color": "#F44336", "font": {"color": "white"}, "id": "perf(core): use deque for result reassembly in RunnableRetry batch", "label": "perf(core): use deque for result reassembly in RunnableRetry batch", "shape": "dot"}, {"color": "#F44336", "font": {"color": "white"}, "id": "perf(text-splitters)", "label": "perf(text-splitters)", "shape": "dot"}, {"color": "#F44336", "font": {"color": "white"}, "id": "issue 29637", "label": "issue 29637", "shape": "dot"}, {"color": "#4CAF50", "font": {"color": "white"}, "id": "codspeed-hq[bot]", "label": "codspeed-hq[bot]", "shape": "dot"}, {"color": "#FFEB3B", "font": {"color": "white"}, "id": "performance report", "label": "performance report", "shape": "dot"}, {"color": "#F44336", "font": {"color": "white"}, "id": "issue-35442", "label": "issue-35442", "shape": "dot"}, {"color": "#F44336", "font": {"color": "white"}, "id": "ademicho123:fix/structured-output-bind-tools-28848", "label": "ademicho123:fix/structured-output-bind-tools-28848", "shape": "dot"}, {"color": "#F44336", "font": {"color": "white"}, "id": "chore(model-profiles): refresh model profile data", "label": "chore(model-profiles): refresh model profile data", "shape": "dot"}, {"color": "#F44336", "font": {"color": "white"}, "id": "perf(core): optimize callback manager hot paths", "label": "perf(core): optimize callback manager hot paths", "shape": "dot"}, {"color": "#4CAF50", "font": {"color": "white"}, "id": "MichaelKarpe", "label": "MichaelKarpe", "shape": "dot"}, {"color": "#2196F3", "font": {"color": "white"}, "id": "langchain-huggingface==1.2.1", "label": "langchain-huggingface==1.2.1", "shape": "dot"}, {"color": "#4CAF50", "font": {"color": "white"}, "id": "Shivangisharma4", "label": "Shivangisharma4", "shape": "dot"}, {"color": "#4CAF50", "font": {"color": "white"}, "id": "Umut Polat", "label": "Umut Polat", "shape": "dot"}, {"color": "#2196F3", "font": {"color": "white"}, "id": "_consolidate_calls", "label": "_consolidate_calls", "shape": "dot"}, {"color": "#4CAF50", "font": {"color": "white"}, "id": "gautamvarmadatla", "label": "gautamvarmadatla", "shape": "dot"}, {"color": "#FFEB3B", "font": {"color": "white"}, "id": "fix(core)", "label": "fix(core)", "shape": "dot"}, {"color": "#4CAF50", "font": {"color": "white"}, "id": "fix(huggingface)", "label": "fix(huggingface)", "shape": "dot"}, {"color": "#F44336", "font": {"color": "white"}, "id": "issue #32197", "label": "issue #32197", "shape": "dot"}, {"color": "#4CAF50", "font": {"color": "white"}, "id": "issue_author", "label": "issue_author", "shape": "dot"}, {"color": "#2196F3", "font": {"color": "white"}, "id": "langchain-huggingface", "label": "langchain-huggingface", "shape": "dot"}, {"color": "#FFEB3B", "font": {"color": "white"}, "id": "abatch_as_completed", "label": "abatch_as_completed", "shape": "dot"}, {"color": "#FFEB3B", "font": {"color": "white"}, "id": "pending tasks", "label": "pending tasks", "shape": "dot"}, {"color": "#4CAF50", "font": {"color": "white"}, "id": "universeplayer", "label": "universeplayer", "shape": "dot"}, {"color": "#4CAF50", "font": {"color": "white"}, "id": "mdrxy", "label": "mdrxy", "shape": "dot"}, {"color": "#F44336", "font": {"color": "white"}, "id": "issue with ChatOpenAI", "label": "issue with ChatOpenAI", "shape": "dot"}, {"color": "#4CAF50", "font": {"color": "white"}, "id": "lonnie08", "label": "lonnie08", "shape": "dot"}, {"color": "#F44336", "font": {"color": "white"}, "id": "test(chatglm): add tests for invalid API and timeout scenarios", "label": "test(chatglm): add tests for invalid API and timeout scenarios", "shape": "dot"}, {"color": "#FFEB3B", "font": {"color": "white"}, "id": "ChatGLM chat model", "label": "ChatGLM chat model", "shape": "dot"}, {"color": "#4CAF50", "font": {"color": "white"}, "id": "user", "label": "user", "shape": "dot"}, {"color": "#F44336", "font": {"color": "white"}, "id": "issue-35492", "label": "issue-35492", "shape": "dot"}, {"color": "#4CAF50", "font": {"color": "white"}, "id": "User 123", "label": "User 123", "shape": "dot"}, {"color": "#2196F3", "font": {"color": "white"}, "id": "LangChain Core", "label": "LangChain Core", "shape": "dot"}, {"color": "#4CAF50", "font": {"color": "white"}, "id": "Navin Senguttuvan", "label": "Navin Senguttuvan", "shape": "dot"}, {"color": "#F44336", "font": {"color": "white"}, "id": "Issue #28848", "label": "Issue #28848", "shape": "dot"}, {"color": "#2196F3", "font": {"color": "white"}, "id": "LLMToolSelectorMiddleware", "label": "LLMToolSelectorMiddleware", "shape": "dot"}, {"color": "#F44336", "font": {"color": "white"}, "id": "fix(langchain)", "label": "fix(langchain)", "shape": "dot"}, {"color": "#FFEB3B", "font": {"color": "white"}, "id": "Claude", "label": "Claude", "shape": "dot"}, {"color": "#4CAF50", "font": {"color": "white"}, "id": "priyankakukreja267", "label": "priyankakukreja267", "shape": "dot"}, {"color": "#FFEB3B", "font": {"color": "white"}, "id": "benchmark tooling", "label": "benchmark tooling", "shape": "dot"}, {"color": "#4CAF50", "font": {"color": "white"}, "id": "ademicho123", "label": "ademicho123", "shape": "dot"}, {"color": "#F44336", "font": {"color": "white"}, "id": "issue-28848", "label": "issue-28848", "shape": "dot"}, {"color": "#F44336", "font": {"color": "white"}, "id": "35475", "label": "35475", "shape": "dot"}, {"color": "#4CAF50", "font": {"color": "white"}, "id": "yangbaechu", "label": "yangbaechu", "shape": "dot"}, {"color": "#FFEB3B", "font": {"color": "white"}, "id": "RunnableRetry.batch/abatch", "label": "RunnableRetry.batch/abatch", "shape": "dot"}, {"color": "#4CAF50", "font": {"color": "white"}, "id": "jk", "label": "jk", "shape": "dot"}, {"color": "#4CAF50", "font": {"color": "white"}, "id": "Copilot", "label": "Copilot", "shape": "dot"}, {"color": "#2196F3", "font": {"color": "white"}, "id": "langchain", "label": "langchain", "shape": "dot"}, {"color": "#F44336", "font": {"color": "white"}, "id": "issue #35011", "label": "issue #35011", "shape": "dot"}, {"color": "#4CAF50", "font": {"color": "white"}, "id": "gitbalaji", "label": "gitbalaji", "shape": "dot"}, {"color": "#F44336", "font": {"color": "white"}, "id": "fix(text-splitters)", "label": "fix(text-splitters)", "shape": "dot"}, {"color": "#F44336", "font": {"color": "white"}, "id": "PR #32325", "label": "PR #32325", "shape": "dot"}, {"color": "#2196F3", "font": {"color": "white"}, "id": "text-splitters", "label": "text-splitters", "shape": "dot"}]);
+                  edges = new vis.DataSet([{"arrows": "to", "from": "giulio-leone", "label": "PROPOSED_SOLUTION", "title": "PROPOSED_SOLUTION", "to": "fix: preserve tool_use/tool_result pairs in trim_messages"}, {"arrows": "to", "from": "giulio-leone", "label": "PROPOSED_SOLUTION", "title": "PROPOSED_SOLUTION", "to": "fix(openai)"}, {"arrows": "to", "from": "giulio-leone", "label": "PROPOSED_SOLUTION", "title": "PROPOSED_SOLUTION", "to": "fix: preserve tool_use/tool_result pairs in trim_messages"}, {"arrows": "to", "from": "giulio-leone", "label": "PROPOSED_SOLUTION", "title": "PROPOSED_SOLUTION", "to": "fix(core): cancel pending tasks in abatch_as_completed on exception or early exit"}, {"arrows": "to", "from": "giulio-leone", "label": "RESOLVED", "title": "RESOLVED", "to": "#35436"}, {"arrows": "to", "from": "giulio-leone", "label": "RESOLVED", "title": "RESOLVED", "to": "#29637"}, {"arrows": "to", "from": "giulio-leone", "label": "RESOLVED", "title": "RESOLVED", "to": "fix(core): guard merge_lists against non-dict elements when matching by index"}, {"arrows": "to", "from": "giulio-leone", "label": "REPORTED_ISSUE", "title": "REPORTED_ISSUE", "to": "#35436"}, {"arrows": "to", "from": "giulio-leone", "label": "MENTIONED", "title": "MENTIONED", "to": "Mistral streaming responses"}, {"arrows": "to", "from": "giulio-leone", "label": "MENTIONED", "title": "MENTIONED", "to": "#35486"}, {"arrows": "to", "from": "giulio-leone", "label": "PROPOSED_FIX", "title": "PROPOSED_FIX", "to": "fix(openai)"}, {"arrows": "to", "from": "giulio-leone", "label": "PROPOSED_FIX", "title": "PROPOSED_FIX", "to": "fix: preserve tool_use/tool_result pairs in trim_messages"}, {"arrows": "to", "from": "giulio-leone", "label": "PROPOSED_FIX", "title": "PROPOSED_FIX", "to": "fix(core): cancel pending tasks in abatch_as_completed on exception or early exit"}, {"arrows": "to", "from": "giulio-leone", "label": "PROPOSED_FIX", "title": "PROPOSED_FIX", "to": "fix(core): make trim_messages respect tool-call group integrity"}, {"arrows": "to", "from": "giulio-leone", "label": "PROPOSED_FIX", "title": "PROPOSED_FIX", "to": "fix(core): fix RunnableRetry.batch position corruption with return_exceptions"}, {"arrows": "to", "from": "giulio-leone", "label": "REPORTED", "title": "REPORTED", "to": "issue-123"}, {"arrows": "to", "from": "giulio-leone", "label": "REPORTED", "title": "REPORTED", "to": "TypeError: string indices must be integers, not \u0027str\u0027"}, {"arrows": "to", "from": "giulio-leone", "label": "REPORTED", "title": "REPORTED", "to": "disable_streaming=\u0027tool_calling\u0027 causes crash"}, {"arrows": "to", "from": "giulio-leone", "label": "CHANGED_STATE", "title": "CHANGED_STATE", "to": "fix(core): prevent RunnableRetry.batch from returning corrupted outputs on partial failure"}, {"arrows": "to", "from": "giulio-leone", "label": "CHANGED_STATE", "title": "CHANGED_STATE", "to": "disable_streaming=\u0027tool_calling\u0027 causes crash"}, {"arrows": "to", "from": "giulio-leone", "label": "CHANGED_STATE", "title": "CHANGED_STATE", "to": "fix(core): RunnableRetry.batch corrupted outputs on partial retry success"}, {"arrows": "to", "from": "giulio-leone", "label": "CHANGED_STATE", "title": "CHANGED_STATE", "to": "perf(core): use deque for pipeline batch output reassembly in RunnableSequence"}, {"arrows": "to", "from": "giulio-leone", "label": "CHANGED_STATE", "title": "CHANGED_STATE", "to": "perf(core): use deque for result reassembly in RunnableRetry batch"}, {"arrows": "to", "from": "giulio-leone", "label": "CHANGED_STATE", "title": "CHANGED_STATE", "to": "perf(text-splitters)"}, {"arrows": "to", "from": "fix: preserve tool_use/tool_result pairs in trim_messages", "label": "RESOLVED", "title": "RESOLVED", "to": "issue 29637"}, {"arrows": "to", "from": "codspeed-hq[bot]", "label": "MENTIONED", "title": "MENTIONED", "to": "performance report"}, {"arrows": "to", "from": "codspeed-hq[bot]", "label": "REPORTED", "title": "REPORTED", "to": "performance report"}, {"arrows": "to", "from": "codspeed-hq[bot]", "label": "REPORTED", "title": "REPORTED", "to": "issue-35442"}, {"arrows": "to", "from": "codspeed-hq[bot]", "label": "REPORTED", "title": "REPORTED", "to": "ademicho123:fix/structured-output-bind-tools-28848"}, {"arrows": "to", "from": "codspeed-hq[bot]", "label": "REPORTED", "title": "REPORTED", "to": "chore(model-profiles): refresh model profile data"}, {"arrows": "to", "from": "codspeed-hq[bot]", "label": "REPORTED", "title": "REPORTED", "to": "perf(core): optimize callback manager hot paths"}, {"arrows": "to", "from": "MichaelKarpe", "label": "REPORTED_ISSUE", "title": "REPORTED_ISSUE", "to": "langchain-huggingface==1.2.1"}, {"arrows": "to", "from": "Shivangisharma4", "label": "MENTIONED", "title": "MENTIONED", "to": "MichaelKarpe"}, {"arrows": "to", "from": "Umut Polat", "label": "PROPOSED_SOLUTION", "title": "PROPOSED_SOLUTION", "to": "fix(openai)"}, {"arrows": "to", "from": "Umut Polat", "label": "REPORTED_ISSUE", "title": "REPORTED_ISSUE", "to": "_consolidate_calls"}, {"arrows": "to", "from": "gautamvarmadatla", "label": "MENTIONED", "title": "MENTIONED", "to": "giulio-leone"}, {"arrows": "to", "from": "gautamvarmadatla", "label": "REPORTED", "title": "REPORTED", "to": "giulio-leone"}, {"arrows": "to", "from": "fix(core)", "label": "REPORTED", "title": "REPORTED", "to": "TypeError: string indices must be integers, not \u0027str\u0027"}, {"arrows": "to", "from": "fix(huggingface)", "label": "CHANGED_STATE", "title": "CHANGED_STATE", "to": "issue #32197"}, {"arrows": "to", "from": "issue_author", "label": "REPORTED", "title": "REPORTED", "to": "langchain-huggingface"}, {"arrows": "to", "from": "abatch_as_completed", "label": "CHANGED_STATE", "title": "CHANGED_STATE", "to": "pending tasks"}, {"arrows": "to", "from": "universeplayer", "label": "PROPOSED_FIX", "title": "PROPOSED_FIX", "to": "fix(openai)"}, {"arrows": "to", "from": "mdrxy", "label": "REPORTED", "title": "REPORTED", "to": "issue with ChatOpenAI"}, {"arrows": "to", "from": "lonnie08", "label": "PROPOSED_FIX", "title": "PROPOSED_FIX", "to": "issue-35442"}, {"arrows": "to", "from": "test(chatglm): add tests for invalid API and timeout scenarios", "label": "PROPOSED_FIX", "title": "PROPOSED_FIX", "to": "ChatGLM chat model"}, {"arrows": "to", "from": "user", "label": "PROPOSED_FIX", "title": "PROPOSED_FIX", "to": "issue-35492"}, {"arrows": "to", "from": "user", "label": "REPORTED", "title": "REPORTED", "to": "langchain-huggingface"}, {"arrows": "to", "from": "User 123", "label": "REPORTED", "title": "REPORTED", "to": "LangChain Core"}, {"arrows": "to", "from": "Navin Senguttuvan", "label": "PROPOSED_FIX", "title": "PROPOSED_FIX", "to": "Issue #28848"}, {"arrows": "to", "from": "LLMToolSelectorMiddleware", "label": "CHANGED_STATE", "title": "CHANGED_STATE", "to": "fix(langchain)"}, {"arrows": "to", "from": "Claude", "label": "PROPOSED_FIX", "title": "PROPOSED_FIX", "to": "fix(langchain)"}, {"arrows": "to", "from": "priyankakukreja267", "label": "REPORTED", "title": "REPORTED", "to": "benchmark tooling"}, {"arrows": "to", "from": "ademicho123", "label": "PROPOSED_FIX", "title": "PROPOSED_FIX", "to": "issue-28848"}, {"arrows": "to", "from": "fix(core): fix RunnableRetry.batch position corruption with return_exceptions", "label": "REPORTED", "title": "REPORTED", "to": "35475"}, {"arrows": "to", "from": "yangbaechu", "label": "PROPOSED_FIX", "title": "PROPOSED_FIX", "to": "RunnableRetry.batch/abatch"}, {"arrows": "to", "from": "jk", "label": "PROPOSED_FIX", "title": "PROPOSED_FIX", "to": "perf(core): optimize callback manager hot paths"}, {"arrows": "to", "from": "Copilot", "label": "PROPOSED_FIX", "title": "PROPOSED_FIX", "to": "perf(text-splitters)"}, {"arrows": "to", "from": "langchain", "label": "REPORTED", "title": "REPORTED", "to": "issue #35011"}, {"arrows": "to", "from": "gitbalaji", "label": "PROPOSED_FIX", "title": "PROPOSED_FIX", "to": "fix(text-splitters)"}, {"arrows": "to", "from": "PR #32325", "label": "CHANGED_STATE", "title": "CHANGED_STATE", "to": "text-splitters"}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>

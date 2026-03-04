@@ -1,0 +1,500 @@
+[
+    {
+        "source_id": "github_issue_35499",
+        "url": "https://github.com/langchain-ai/langchain/pull/35499",
+        "title": "fix(text-splitters): lazy-import nltk/spacy/sentence-transformers to avoid ~700MB memory bloat",
+        "body": "## Problem\n\nImporting `langchain_text_splitters` eagerly pulls in `nltk`, `spacy`, and `sentence-transformers` (plus `torch` transitively) at module level, adding ~700 MiB RSS even when only lightweight splitters like `RecursiveCharacterTextSplitter` are used.\n\nThis regression was introduced in 1.0.0 when [PLC0415](https://docs.astral.sh/ruff/rules/import-outside-top-level/) moved lazy imports to top-level (PR #32325).\n\n## Root Cause\n\n`__init__.py` imports from `.nltk`, `.spacy`, and `.sentence_transformers` at module level. Each of these files does `try: import heavy_lib` at the top, so merely importing the package triggers the full import chain.\n\n## Fix\n\nMove the three heavy-dep splitter imports (`NLTKTextSplitter`, `SpacyTextSplitter`, `SentenceTransformersTokenTextSplitter`) behind a `__getattr__` lazy loader, following the exact same pattern used throughout `langchain-core` (e.g., `langchain_core.embeddings`, `langchain_core.callbacks`).\n\n- **`__all__` is unchanged** \u2014 public API is identical\n- **`TYPE_CHECKING` block** preserves type-checker visibility\n- **`globals()[attr_name] = result`** caches the import so subsequent accesses are free\n\n## Tests Added\n\n`tests/unit_tests/test_lazy_imports.py`:\n- Bare package import does not pull in heavy deps\n- Lazy `__getattr__` correctly resolves each class\n- Unknown attributes raise `AttributeError`\n- Lightweight splitters remain directly importable\n- E2E: using `RecursiveCharacterTextSplitter` doesn't import heavy deps\n\n## Reproduction (from issue)\n\n```python\nimport os, psutil\ndef mem(): return psutil.Process(os.getpid()).memory_info().rss / 1024 / 1024\n\nprint(f\"Start: {mem():.1f} MiB\")\nfrom langchain_text_splitters import RecursiveCharacterTextSplitter\nprint(f\"After: {mem():.1f} MiB\")\n# Before: 74 \u2192 736 MiB (+662 MiB)\n# After:  74 \u2192 ~80 MiB (no heavy deps loaded)\n```\n\nFixes #35437",
+        "state": "open",
+        "author": "sxu75374",
+        "created_at": "2026-03-01T20:19:41Z",
+        "comments": []
+    },
+    {
+        "source_id": "github_issue_35498",
+        "url": "https://github.com/langchain-ai/langchain/pull/35498",
+        "title": "fix(openai): handle null choices from model_dump() for vLLM compatibility",
+        "body": "## Description\n\nFixes #32252\n\nWhen using OpenAI-compatible APIs like vLLM, model_dump() can serialize choices as null even though the response object has valid choices accessible via direct attribute access (e.g., response.choices). This causes _create_chat_result to raise a TypeError, even though the data is present and usable.\n\nThis PR adds a fallback in _create_chat_result that, when choices is None in the serialized dict and the response is not already a plain dict, attempts to extract choices directly from the response object's .choices attribute. If valid choices are found, they are serialized individually via model_dump() and used in place of the null value. If the fallback also yields None, the existing improved error message (from #35236) is still raised.\n\n## Changes\n\n- libs/partners/openai/langchain_openai/chat_models/base.py: Added fallback logic between the choices extraction and the null-check error, recovering choices from response.choices when model_dump() returns null.\n- libs/partners/openai/tests/unit_tests/chat_models/test_base.py: Added two regression tests:\n  - test_create_chat_result_null_choices_fallback_to_response_object: verifies the fallback recovers valid choices and produces correct ChatResult.\n  - test_create_chat_result_null_choices_still_raises_when_truly_null: verifies the TypeError is still raised when choices is genuinely null on both the serialized dict and the response object.\n\n## Why this approach\n\n- PR #35236 (merged) improved the error message but did not fix the underlying issue -- users of vLLM still get an error instead of a successful response.\n- PR #34791 (open, stale since Jan 17 with no reviews) takes a similar fallback approach. This PR improves on it with: a not isinstance(response, dict) guard to avoid unnecessary work on dict responses, debug logging when the fallback is triggered, and a second test covering the case where the error should still be raised.\n- The fix is minimal and backward-compatible: it only activates when choices would otherwise be null, and only for non-dict response objects.\n\n## Disclaimer\n\nThis contribution was developed with assistance from an AI agent (Claude).",
+        "state": "closed",
+        "author": "universeplayer",
+        "created_at": "2026-03-01T20:07:36Z",
+        "comments": [
+            {
+                "comment_id": "3980935457",
+                "user": "mdrxy",
+                "body": "Putting this complexity into ChatOpenAI to handle a non-OpenAI provider is not warranted. See https://github.com/langchain-ai/langchain/issues/34328.",
+                "created_at": "2026-03-01T20:09:52Z"
+            },
+            {
+                "comment_id": "3980943413",
+                "user": "codspeed-hq[bot]",
+                "body": "<!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->\n## Merging this PR will **not alter performance**\n\n\n\n\n`\u2705 6` untouched benchmarks  \n`\u23e9 30` skipped benchmarks[^skipped]  \n\n\n\n---\n\n<sub>Comparing <code>universeplayer:fix/vllm-null-choices</code> (65addaf) with <code>master</code> (21b64e5)</sub>\n\n<a href=\"https://codspeed.io/langchain-ai/langchain/branches/universeplayer%3Afix%2Fvllm-null-choices?utm_source=github&utm_medium=comment-v2&utm_content=button\">\n  <picture>\n    <source media=\"(prefers-color-scheme: dark)\" srcset=\"https://codspeed.io/pr-report/open-in-codspeed-dark.svg\">\n    <source media=\"(prefers-color-scheme: light)\" srcset=\"https://codspeed.io/pr-report/open-in-codspeed-light.svg\">\n    <img alt=\"Open in CodSpeed\" src=\"https://codspeed.io/pr-report/open-in-codspeed-light.svg\" width=\"169\" height=\"32\">\n  </picture>\n</a>\n\n\n[^skipped]: 30 benchmarks were skipped, so the baseline results were used instead. If they were deleted from the codebase, [click here and archive them to remove them from the performance reports](https://codspeed.io/langchain-ai/langchain/branches/universeplayer%3Afix%2Fvllm-null-choices?q=is%3Askipped&utm_source=github&utm_medium=comment-v2&utm_content=archive).\n",
+                "created_at": "2026-03-01T20:14:44Z"
+            }
+        ]
+    },
+    {
+        "source_id": "github_issue_35497",
+        "url": "https://github.com/langchain-ai/langchain/pull/35497",
+        "title": "fix(core): make trim_messages respect tool-call group integrity",
+        "body": "## Description\n\n`trim_messages` now treats `AIMessage(tool_calls)` + following `ToolMessage(s)` as atomic groups that cannot be split during trimming. This fixes three classes of `BadRequestError` when using providers that validate message ordering (e.g. Anthropic's token counting API).\n\nFixes #29637\n\n## Changes\n\n### 1. Group-aware binary search (`_first_max_tokens`)\nBinary search now operates on **group boundaries** instead of individual message indices. A group is either a single non-tool message or an `AIMessage(tool_calls)` + all following `ToolMessages`. This ensures that `messages[:mid]` never splits a tool-call exchange.\n\n### 2. Rewritten `_last_max_tokens` (no more message reversal)\nThe old implementation reversed messages and delegated to `_first_max_tokens`. Reversed sequences like `[ToolMessage, AIMessage(tool_calls), ...]` are invalid for Anthropic's `count_tokens` API. The new implementation performs a **forward binary search** on group boundaries from the end, preserving natural message ordering in all calls to the token counter.\n\n### 3. Forward bound tools to token counter\nWhen `token_counter` is a bound LLM (via `bind_tools()`), the bound `tools` are automatically extracted from `kwargs` and forwarded to `get_num_tokens_from_messages()` \u2014 fixing the _\"tool_use blocks must define tools\"_ error (Example 2 from the issue).\n\n### New helper: `_get_message_group_boundaries()`\nReturns valid split-point indices where `messages[:i]` is always a structurally valid prefix \u2014 no orphaned `ToolMessages`, no `AIMessage(tool_calls)` without their replies.\n\n## Tests\n11 new tests covering:\n- Tool groups never split with strategy `first` / `last`\n- Token counter never receives reversed messages\n- Tool groups with `include_system`, `start_on`, `end_on`\n- Multiple tool groups\n- Exact token boundary fit\n- Bound tools forwarded to counter\n- Direct `_get_message_group_boundaries()` unit test\n\nAll 165 tests pass (154 existing + 11 new).",
+        "state": "open",
+        "author": "giulio-leone",
+        "created_at": "2026-03-01T18:08:49Z",
+        "comments": [
+            {
+                "comment_id": "3980697789",
+                "user": "giulio-leone",
+                "body": "Added in 4da7f56: new test `test_trim_messages_tool_group_never_split_first_allow_partial` covering `strategy=\"first\"` + `allow_partial=True` with a tool-call group that partially fits the budget. Verifies that even with partial trimming enabled, an AIMessage with tool_calls is never orphaned from its ToolMessages.",
+                "created_at": "2026-03-01T18:23:22Z"
+            },
+            {
+                "comment_id": "3980758543",
+                "user": "giulio-leone",
+                "body": "Added test for `strategy='first'` + `allow_partial=True` with a tool-call group that doesn't fit the budget (commit a74fd00). Verifies the group is excluded whole, not split.",
+                "created_at": "2026-03-01T18:48:44Z"
+            }
+        ]
+    },
+    {
+        "source_id": "github_issue_35496",
+        "url": "https://github.com/langchain-ai/langchain/pull/35496",
+        "title": "feat(anthropic): add bedrock_compat mode for Bedrock proxy streaming",
+        "body": "## Summary\n\nAdd `bedrock_compat` parameter to `ChatAnthropic` to enable compatibility mode for Bedrock proxy and similar proxies that send SSE events without the `event:` field.\n\n## Problem\n\nWhen using `ChatAnthropic` with Bedrock-compatible proxies (or other proxies that do not follow the standard Anthropic SSE format), streaming fails because:\n\n1. Bedrock proxies send SSE events with only `data:` lines\n2. The Anthropic SDK expects both `event:` and `data:` fields\n3. Without the `event:` field, all events are silently skipped, resulting in \"No generation chunks were returned\" error\n\n## Solution\n\nAdd a `bedrock_compat` parameter that, when set to `True`, wraps the streaming response to infer event types from the data payload.\n\n## Usage\n\n```python\nfrom langchain_anthropic import ChatAnthropic\n\nmodel = ChatAnthropic(\n    model=\"anthropic.claude-4-5-opus-20250129\",\n    bedrock_compat=True,\n    base_url=\"https://my-bedrock-proxy.example.com\",\n)\n\nfor chunk in model.stream(\"Hello\"):\n    print(chunk.content, end=\"|\")\n```\n\nFixes #35442",
+        "state": "open",
+        "author": "lonnie08",
+        "created_at": "2026-03-01T14:28:07Z",
+        "comments": [
+            {
+                "comment_id": "3980090863",
+                "user": "codspeed-hq[bot]",
+                "body": "<!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->\n## Merging this PR will **not alter performance**\n\n\n\n\n`\u2705 3` untouched benchmarks  \n`\u23e9 33` skipped benchmarks[^skipped]  \n\n\n\n---\n\n<sub>Comparing <code>lonnie08:fix/bedrock-streaming-compat</code> (cb1b7ab) with <code>master</code> (e939c96)</sub>\n\n<a href=\"https://codspeed.io/langchain-ai/langchain/branches/lonnie08%3Afix%2Fbedrock-streaming-compat?utm_source=github&utm_medium=comment-v2&utm_content=button\">\n  <picture>\n    <source media=\"(prefers-color-scheme: dark)\" srcset=\"https://codspeed.io/pr-report/open-in-codspeed-dark.svg\">\n    <source media=\"(prefers-color-scheme: light)\" srcset=\"https://codspeed.io/pr-report/open-in-codspeed-light.svg\">\n    <img alt=\"Open in CodSpeed\" src=\"https://codspeed.io/pr-report/open-in-codspeed-light.svg\" width=\"169\" height=\"32\">\n  </picture>\n</a>\n\n\n[^skipped]: 33 benchmarks were skipped, so the baseline results were used instead. If they were deleted from the codebase, [click here and archive them to remove them from the performance reports](https://codspeed.io/langchain-ai/langchain/branches/lonnie08%3Afix%2Fbedrock-streaming-compat?q=is%3Askipped&utm_source=github&utm_medium=comment-v2&utm_content=archive).\n",
+                "created_at": "2026-03-01T14:30:14Z"
+            }
+        ]
+    },
+    {
+        "source_id": "github_issue_35495",
+        "url": "https://github.com/langchain-ai/langchain/pull/35495",
+        "title": "test(chatglm): add tests for invalid API and timeout scenarios",
+        "body": "## Description\r\nAdd tests to verify ChatGLM chat model's error handling for invalid API addresses and timeouts, covering sync, async, and streaming request modes.\r\n\r\n## Verification\r\n- Ran `make format`, `make lint` and `make test` from the root of the `langchain` package, all checks passed (only minor type checker import warnings, no impact on test execution).\r\n- Manually executed the new test cases to confirm they correctly validate error behaviors of ChatGLM under invalid API/timeout scenarios.\r\n\r\n## Additional Notes\r\n- No breaking changes, no dependency modifications, and no updates to `uv.lock`/`pyproject.toml` files.\r\n- This PR only touches the `langchain` package (specifically test files under `chat_models`), adhering to single-package modification guidelines.\r\n",
+        "state": "closed",
+        "author": "XXXJCSAMA",
+        "created_at": "2026-03-01T14:06:52Z",
+        "comments": [
+            {
+                "comment_id": "3980051967",
+                "user": "codspeed-hq[bot]",
+                "body": "<!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->\n## Merging this PR will **not alter performance**\n\n\n\n\n`\u2705 6` untouched benchmarks  \n`\u23e9 30` skipped benchmarks[^skipped]  \n\n\n\n---\n\n<sub>Comparing <code>XXXJCSAMA:master</code> (d920347) with <code>master</code> (e939c96)</sub>\n\n<a href=\"https://codspeed.io/langchain-ai/langchain/branches/XXXJCSAMA%3Amaster?utm_source=github&utm_medium=comment-v2&utm_content=button\">\n  <picture>\n    <source media=\"(prefers-color-scheme: dark)\" srcset=\"https://codspeed.io/pr-report/open-in-codspeed-dark.svg\">\n    <source media=\"(prefers-color-scheme: light)\" srcset=\"https://codspeed.io/pr-report/open-in-codspeed-light.svg\">\n    <img alt=\"Open in CodSpeed\" src=\"https://codspeed.io/pr-report/open-in-codspeed-light.svg\" width=\"169\" height=\"32\">\n  </picture>\n</a>\n\n\n[^skipped]: 30 benchmarks were skipped, so the baseline results were used instead. If they were deleted from the codebase, [click here and archive them to remove them from the performance reports](https://codspeed.io/langchain-ai/langchain/branches/XXXJCSAMA%3Amaster?q=is%3Askipped&utm_source=github&utm_medium=comment-v2&utm_content=archive).\n",
+                "created_at": "2026-03-01T14:13:16Z"
+            }
+        ]
+    },
+    {
+        "source_id": "github_issue_35493",
+        "url": "https://github.com/langchain-ai/langchain/pull/35493",
+        "title": "fix(core): fix nested subgraph rendering for 3+ level nesting in draw_mermaid",
+        "body": "Fixes #35492\r\n\r\nThe \"empty subgraphs\" section in `draw_mermaid()` skips multi-level prefixes (e.g., `parent:child`) due to the `if \":\" not in prefix` check, causing 3+ level nested subgraph boxes to not render at all. This fix splits the prefix on `:` and opens subgraph blocks for each nesting level.\r\n\r\n**Before:** `if \":\" not in prefix` \u2192 skips multi-level prefixes entirely\r\n**After:** `prefix.split(\":\")` \u2192 iterates each level, opens subgraph blocks per level\r\n\r\n### How did you verify your code works?\r\n\r\n- All 21 existing tests in `test_graph.py` pass (17 snapshots passed, no updates needed)\r\n- `make format` and `make lint` pass\r\n- Manually verified correct rendering for 3-level, 4-level nesting with `draw_mermaid_png()`\r\n\r\n### Screenshots\r\n**Before (bug):**\r\n<img width=\"273\" height=\"234\" alt=\"image\" src=\"https://github.com/user-attachments/assets/a00aed75-143e-4bb0-a7d7-cc0053412605\" />\r\n\r\n**After (fix):**\r\n<img width=\"230\" height=\"334\" alt=\"image\" src=\"https://github.com/user-attachments/assets/fb1223fe-397f-4bb2-844b-b56e08b2a439\" />\r\n ",
+        "state": "open",
+        "author": "taehan79-kim",
+        "created_at": "2026-03-01T09:29:37Z",
+        "comments": []
+    },
+    {
+        "source_id": "github_issue_35492",
+        "url": "https://github.com/langchain-ai/langchain/issues/35492",
+        "title": "Nested subgraph rendering fails for 3+ levels with `draw_mermaid` and `xray=True`",
+        "body": "### Checked other resources\n\n- [x] This is a bug, not a usage question.\n- [x] I added a clear and descriptive title that summarizes this issue.\n- [x] I used the GitHub search to find a similar question and didn't find it.\n- [x] I am sure that this is a bug in LangChain rather than my code.\n- [x] The bug is not resolved by updating to the latest stable version of LangChain (or the specific integration package).\n- [x] This is not related to the langchain-community package.\n- [x] I posted a self-contained, minimal, reproducible example. A maintainer can copy it and run it AS IS.\n\n### Package (Required)\n\n- [ ] langchain\n- [ ] langchain-openai\n- [ ] langchain-anthropic\n- [ ] langchain-classic\n- [x] langchain-core\n- [ ] langchain-model-profiles\n- [ ] langchain-tests\n- [ ] langchain-text-splitters\n- [ ] langchain-chroma\n- [ ] langchain-deepseek\n- [ ] langchain-exa\n- [ ] langchain-fireworks\n- [ ] langchain-groq\n- [ ] langchain-huggingface\n- [ ] langchain-mistralai\n- [ ] langchain-nomic\n- [ ] langchain-ollama\n- [ ] langchain-openrouter\n- [ ] langchain-perplexity\n- [ ] langchain-qdrant\n- [ ] langchain-xai\n- [ ] Other / not sure / general\n\n### Related Issues / PRs\n\n_No response_\n\n### Reproduction Steps / Example Code (Python)\n\n```python\nfrom typing_extensions import TypedDict\nfrom langgraph.graph import StateGraph, START, END\nfrom IPython.display import Image, display\n\n\n# --- Grandchild graph ---\nclass GrandChildState(TypedDict):\n    my_grandchild_key: str\n\n\ndef grandchild_1(state: GrandChildState) -> GrandChildState:\n    return {\"my_grandchild_key\": f'([GrandChild] {state[\"my_grandchild_key\"]})'}\n\n\ngrandchild = StateGraph(GrandChildState)\ngrandchild.add_node(\"grandchild\", grandchild_1)\ngrandchild.add_edge(START, \"grandchild\")\ngrandchild.add_edge(\"grandchild\", END)\ngrandchild_graph = grandchild.compile()\n\n\n# --- Child graph (calls grandchild) ---\nclass ChildState(TypedDict):\n    my_child_key: str\n\n\ndef call_grandchild_graph(state: ChildState) -> ChildState:\n    grandchild_graph_input = {\"my_grandchild_key\": state[\"my_child_key\"]}\n    grandchild_graph_output = grandchild_graph.invoke(grandchild_graph_input)\n    return {\"my_child_key\": f'([Child] {grandchild_graph_output[\"my_grandchild_key\"]})'}\n\n\nchild = StateGraph(ChildState)\nchild.add_node(\"child\", call_grandchild_graph)\nchild.add_edge(START, \"child\")\nchild.add_edge(\"child\", END)\nchild_graph = child.compile()\n\n\n# --- Parent graph (calls child) ---\nclass ParentState(TypedDict):\n    my_parent_key: str\n\n\ndef call_child_graph(state: ParentState) -> ParentState:\n    child_graph_input = {\"my_child_key\": state[\"my_parent_key\"]}\n    child_graph_output = child_graph.invoke(child_graph_input)\n    return {\"my_parent_key\": f'([Parent] {child_graph_output[\"my_child_key\"]})'}\n\n\nparent = StateGraph(ParentState)\nparent.add_node(\"parent\", call_child_graph)\nparent.add_edge(START, \"parent\")\nparent.add_edge(\"parent\", END)\nparent_graph = parent.compile()\n\n\n# --- Reproduce the bug ---\n\n# 2-level nesting: renders correctly\ndisplay(Image(child_graph.get_graph(xray=True).draw_mermaid_png()))\n\n# 3-level nesting: node IDs show \\3a instead of readable names\ndisplay(Image(parent_graph.get_graph(xray=True).draw_mermaid_png()))\n\n# Check the raw Mermaid syntax to see the escaped IDs\nprint(parent_graph.get_graph(xray=True).draw_mermaid())\n```\n\n### Error Message and Stack Trace (if applicable)\n\n```shell\nNo error is raised. The issue is a **rendering defect** \u2014 the generated Mermaid diagram fails to properly render nested subgraph boxes for 3 or more levels of nesting.\n\nFor 3+ level nesting, the diagram shows flat node IDs with escaped colons instead of properly nested subgraph containers:\n\n\ngraph TD;\n\t__start__([<p>__start__</p>]):::first\n\t__end__([<p>__end__</p>]):::last\n\t__start__ --> parent\\3achild\\3agrandchild;\n\tparent\\3achild\\3agrandchild --> __end__;\n\n\nNo subgraph boxes are created at all \u2014 the nested node appears as a flat element with `\\3a` (CSS-escaped colon) in its ID.\n```\n\n### Description\n\nWhen visualizing a LangGraph with **3 or more levels of nested subgraphs** using `get_graph(xray=True).draw_mermaid()`, the Mermaid output fails to create proper subgraph boxes for the nested hierarchy. Instead, nodes appear as flat elements with escaped colon characters in their IDs.\n\n### Root Cause\n\nThe `Graph.extend()` method creates hierarchical node IDs by joining names with colons (e.g., `parent:child:grandchild`).\n\nThe `draw_mermaid()` function in `langchain_core/runnables/graph_mermaid.py` has two code paths for subgraph rendering:\n\n1. **`add_subgraph()` function (recursive)** - Handles subgraphs that contain internal edges between their nodes\n2. **\"Empty subgraphs\" section (around line 239)** - Handles subgraphs where all nodes connect to nodes outside the subgraph (no internal edges)\n\nThe bug exists in the \"empty subgraphs\" section. The original code used this condition:\n\n```python\nif \":\" not in prefix:\n    # ... create subgraph box\n```\n\nThis condition completely skipped multi-level prefixes like `parent:child`. Since each graph wraps its child as a single subgraph node, the nested subgraph's nodes have no internal edges (they connect only to parent nodes), which forces the code into the \"empty subgraphs\" path. With `\":\" not in prefix` being false for `parent:child`, the subgraph boxes never get created in the Mermaid output.\n\nAs a result, 3+ level nested subgraphs don't render their subgraph containers, causing the nodes to appear flat with escaped colons in their IDs (`parent\\3achild\\3agrandchild`).\n\n### Behavior Comparison\n\n| Nesting Level | Behavior | Status |\n|---------------|----------|--------|\n| 2 levels (child \u2192 grandchild) | Subgraph boxes render correctly | OK |\n| 3 levels (parent \u2192 child \u2192 grandchild) | Subgraph boxes not created, nodes shown as flat with escaped colons | **Bug** |\n\nThe issue manifests when nested subgraph nodes have no internal edges between them, which forces the \"empty subgraphs\" code path.\n\n### Screenshots\n\n**2-level nesting (correct):**\n\nThe child graph with `xray=True` correctly renders `grandchild` inside a `child` subgraph box.\n\n<img width=\"190\" height=\"284\" alt=\"Image\" src=\"https://github.com/user-attachments/assets/b68109d6-908d-4bb4-a14f-2ded9b8aa878\" />\n\n**3-level nesting (bug):**\n\nThe parent graph with `xray=True` shows `parent\\3achild\\3agrandchild` as a flat node label instead of properly nesting grandchild within subgraph boxes.\n\n<img width=\"273\" height=\"234\" alt=\"Image\" src=\"https://github.com/user-attachments/assets/0820ae69-0cb4-425e-a55b-2e351092b254\" />\n\n### System Info\n\nSystem Information\n------------------\n> OS:  Darwin\n> OS Version:  Darwin Kernel Version 24.6.0: Mon Jul 14 11:30:40 PDT 2025; root:xnu-11417.140.69~1/RELEASE_ARM64_T6041\n> Python Version:  3.13.10 (main, Dec  2 2025, 22:01:27) [Clang 21.1.4 ]\n\nPackage Information\n-------------------\n> langchain_core: 1.2.16\n> langsmith: 0.7.9\n> langgraph_sdk: 0.3.9\n\nOptional packages not installed\n-------------------------------\n> deepagents\n> deepagents-cli\n\nOther Dependencies\n------------------\n> httpx: 0.28.1\n> jsonpatch: 1.33\n> orjson: 3.11.7\n> packaging: 26.0\n> pydantic: 2.12.5\n> pyyaml: 6.0.3\n> requests: 2.32.5\n> requests-toolbelt: 1.0.0\n> tenacity: 9.1.4\n> typing-extensions: 4.15.0\n> uuid-utils: 0.14.1\n> xxhash: 3.6.0\n> zstandard: 0.25.0\n\n> langgraph: 1.0.10",
+        "state": "open",
+        "author": "taehan79-kim",
+        "created_at": "2026-03-01T09:19:41Z",
+        "comments": []
+    },
+    {
+        "source_id": "github_issue_35491",
+        "url": "https://github.com/langchain-ai/langchain/pull/35491",
+        "title": "fix(core): add bind_tools to RunnableSequence for post-structured-out\u2026",
+        "body": "\u2026put chaining\r\n\r\nFixes #28848. `with_structured_output` returns a `RunnableSequence` that previously had no `bind_tools` method, making it impossible to add tools to a structured-output chain without reconstructing the pipeline manually.\r\n\r\nAdd `RunnableSequence.bind_tools` that:\r\n- delegates to `self.first.bind_tools(tools, **kwargs)` when the first step is a `BaseChatModel` directly\r\n- handles the common `with_structured_output` case where the LLM is already wrapped in a `RunnableBinding` (e.g. carrying `response_format`, `tool_choice`, or existing tools) by calling `bind_tools` on the underlying model and merging the resulting kwargs with the existing binding so previously set parameters are preserved\r\n- raises a descriptive `AttributeError` for sequences whose first step is neither a `BaseChatModel` nor a `RunnableBinding` wrapping one\r\n\r\nAlso adds unit tests in `langchain-core` and an integration-style unit test in `langchain-openai` that covers the real `with_structured_output` \u2192 `bind_tools` flow without network calls.\r\n\r\nDisclaimer: Claude.ai was used to assist with this PR\r\n\r\n## Social handles\r\nLinkedIn: https://linkedin.com/in/navin-senguttuvan\r\n",
+        "state": "open",
+        "author": "senguttuvan",
+        "created_at": "2026-03-01T06:24:55Z",
+        "comments": [
+            {
+                "comment_id": "3979276205",
+                "user": "codspeed-hq[bot]",
+                "body": "<!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->\n## Merging this PR will **not alter performance**\n\n\n\n\n`\u2705 6` untouched benchmarks  \n`\u23e9 30` skipped benchmarks[^skipped]  \n\n\n\n---\n\n<sub>Comparing <code>senguttuvan:fix/bind-tools-after-structured-output</code> (a734c65) with <code>master</code> (e939c96)</sub>\n\n<a href=\"https://codspeed.io/langchain-ai/langchain/branches/senguttuvan%3Afix%2Fbind-tools-after-structured-output?utm_source=github&utm_medium=comment-v2&utm_content=button\">\n  <picture>\n    <source media=\"(prefers-color-scheme: dark)\" srcset=\"https://codspeed.io/pr-report/open-in-codspeed-dark.svg\">\n    <source media=\"(prefers-color-scheme: light)\" srcset=\"https://codspeed.io/pr-report/open-in-codspeed-light.svg\">\n    <img alt=\"Open in CodSpeed\" src=\"https://codspeed.io/pr-report/open-in-codspeed-light.svg\" width=\"169\" height=\"32\">\n  </picture>\n</a>\n\n\n[^skipped]: 30 benchmarks were skipped, so the baseline results were used instead. If they were deleted from the codebase, [click here and archive them to remove them from the performance reports](https://codspeed.io/langchain-ai/langchain/branches/senguttuvan%3Afix%2Fbind-tools-after-structured-output?q=is%3Askipped&utm_source=github&utm_medium=comment-v2&utm_content=archive).\n",
+                "created_at": "2026-03-01T06:35:12Z"
+            }
+        ]
+    },
+    {
+        "source_id": "github_issue_35490",
+        "url": "https://github.com/langchain-ai/langchain/pull/35490",
+        "title": "fix(langchain): handle missing 'tools' key in LLMToolSelectorMiddleware response",
+        "body": "## Summary\n\n- `LLMToolSelectorMiddleware._process_selection_response` raised `KeyError: 'tools'` when the selection LLM returned a malformed response without the `tools` key (intermittent with some models under edge-case prompts)\n- `_process_selection_response` now returns `None` when the key is absent, and both `wrap_model_call` / `awrap_model_call` fall back to the original unfiltered request \u2014 keeping the agent functional\n- A warning is logged so the malformed response remains visible\n\n## Root cause\n\n```python\n# Before \u2014 crashes when LLM omits \"tools\"\nfor tool_name in response[\"tools\"]:  # KeyError\n\n# After \u2014 returns None, callers fall back to original request\ntools_from_response = response.get(\"tools\")\nif tools_from_response is None:\n    logger.warning(\"...Falling back to all available tools.\")\n    return None\n```\n\n## Test plan\n\n- [x] `test_missing_tools_key_falls_back_to_all_tools` \u2014 sync path: verifies all tools preserved on missing key\n- [x] `test_missing_tools_key_async_falls_back_to_all_tools` \u2014 async path: verifies no exception raised\n- [x] All 12 existing tests continue to pass\n\nCloses #34358\n\n---\n\n> This PR was developed with the assistance of an AI agent (Claude).",
+        "state": "open",
+        "author": "gitbalaji",
+        "created_at": "2026-03-01T02:37:32Z",
+        "comments": []
+    },
+    {
+        "source_id": "github_issue_35489",
+        "url": "https://github.com/langchain-ai/langchain/pull/35489",
+        "title": "fix(core): prevent duplicate ids kwarg in add_documents and aadd_documents",
+        "body": "## Summary\n- Extract `ids` from `kwargs` before passing to `add_texts`/`aadd_texts` to prevent `TypeError: got multiple values for keyword argument 'ids'`\n- Add regression tests for both sync and async methods\n\nFixes #32283\n\n## Problem\nWhen calling `add_documents` or `aadd_documents` with explicit `ids`:\n```python\nawait vector_store.aadd_documents(documents, ids=[\"doc_1\", \"doc_2\"])\n```\n\nThe `ids` parameter was passed both:\n1. Inside `**kwargs` (as `kwargs[\"ids\"]`)\n2. And then unpacked via `**kwargs` to `aadd_texts`\n\nThis caused Python to raise:\n```\nTypeError: aadd_texts() got multiple values for keyword argument 'ids'\n```\n\n## Solution\nExtract `ids` from `kwargs` using `pop()` before calling `add_texts`/`aadd_texts`, then pass it explicitly:\n```python\nids = kwargs.pop(\"ids\", None)\nreturn self.add_texts(texts, metadatas, ids=ids, **kwargs)\n```\n\n## Test plan\n- [x] Added `test_add_documents_with_explicit_ids_no_duplicate_error` - sync regression test\n- [x] Added `test_aadd_documents_with_explicit_ids_no_duplicate_error` - async regression test\n- [x] Added `test_aadd_documents_without_ids_still_works` - ensures fix doesn't break normal usage\n- [x] All 15 vectorstore tests pass\n\n---\n> [!NOTE]\n> This PR was developed with assistance from Claude Code (AI agent).\n\n\ud83e\udd16 Generated with [Claude Code](https://claude.ai/code)\n",
+        "state": "closed",
+        "author": "priyankakukreja267",
+        "created_at": "2026-03-01T02:18:09Z",
+        "comments": [
+            {
+                "comment_id": "3978898061",
+                "user": "priyankakukreja267",
+                "body": "benchmark tooling is flaky - re-triggering the tests",
+                "created_at": "2026-03-01T02:32:59Z"
+            }
+        ]
+    },
+    {
+        "source_id": "github_issue_35488",
+        "url": "https://github.com/langchain-ai/langchain/pull/35488",
+        "title": "fix(openai): enable bind_tools after with_structured_output",
+        "body": "Wraps the chain returned by \"with_structured_output\" so users can call \"bind_tools\" on it. Before this fix, calling \"structured_llm.bind_tools([...])\" threw \"RunnableSequence\" object has no attribute \"bind_tools\".\r\n\r\nFixes #28848\r\n\r\nI added \"RunnableWithStructuredOutput\" wrapper class that delegates to the underlying chain but exposes \"bind_tools\". When \"bind_tools\" is called, it rebuilds the chain with \"include_raw=True\" which is required for tool usage.\r\n\r\nI tested it by adding 3 unit tests for the new functionality and ran \"make format\" and \"make lint\" which both passed. Also, ran existing \"with_structured_output\" tests to make sure nothing broke",
+        "state": "open",
+        "author": "ademicho123",
+        "created_at": "2026-02-28T22:51:16Z",
+        "comments": [
+            {
+                "comment_id": "3978397330",
+                "user": "codspeed-hq[bot]",
+                "body": "<!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->\n## Merging this PR will **not alter performance**\n\n\n\n\n`\u2705 6` untouched benchmarks  \n`\u23e9 30` skipped benchmarks[^skipped]  \n\n\n\n---\n\n<sub>Comparing <code>ademicho123:fix/structured-output-bind-tools-28848</code> (0168f87) with <code>master</code> (e939c96)</sub>\n\n<a href=\"https://codspeed.io/langchain-ai/langchain/branches/ademicho123%3Afix%2Fstructured-output-bind-tools-28848?utm_source=github&utm_medium=comment-v2&utm_content=button\">\n  <picture>\n    <source media=\"(prefers-color-scheme: dark)\" srcset=\"https://codspeed.io/pr-report/open-in-codspeed-dark.svg\">\n    <source media=\"(prefers-color-scheme: light)\" srcset=\"https://codspeed.io/pr-report/open-in-codspeed-light.svg\">\n    <img alt=\"Open in CodSpeed\" src=\"https://codspeed.io/pr-report/open-in-codspeed-light.svg\" width=\"169\" height=\"32\">\n  </picture>\n</a>\n\n\n[^skipped]: 30 benchmarks were skipped, so the baseline results were used instead. If they were deleted from the codebase, [click here and archive them to remove them from the performance reports](https://codspeed.io/langchain-ai/langchain/branches/ademicho123%3Afix%2Fstructured-output-bind-tools-28848?q=is%3Askipped&utm_source=github&utm_medium=comment-v2&utm_content=archive).\n",
+                "created_at": "2026-02-28T23:03:48Z"
+            }
+        ]
+    },
+    {
+        "source_id": "github_issue_35487",
+        "url": "https://github.com/langchain-ai/langchain/pull/35487",
+        "title": "fix: preserve tool_use/tool_result pairs in trim_messages",
+        "body": "## Summary\n\nFixes #29637\n\n### Problem\n\n`trim_messages` with `strategy='last'` breaks when messages contain tool_use/tool_result pairs. Three sub-problems:\n\n1. **Message reversal breaks tool chain ordering**: The `_last_max_tokens` function reverses messages with `messages[::-1]`, causing ToolMessages to appear before their corresponding AIMessage. Strict token counters (like Anthropic's API) reject this as invalid.\n\n2. **Orphaned tool messages**: After trimming, the result may contain ToolMessages without their corresponding AIMessage, creating invalid sequences.\n\n3. **Tool chain splitting**: The binary search in `_first_max_tokens` can split a tool chain mid-way (e.g., include AIMessage with tool_calls but exclude the ToolMessages).\n\n### Fix\n\n1. **Group-level reversal**: Added `_group_tool_chains()` that groups AIMessage(tool_calls) with their following ToolMessages into atomic units. Messages are now reversed at the group level, maintaining correct internal ordering within each tool chain.\n\n2. **Post-processing validation**: Added `_ensure_valid_tool_pairs()` that removes any orphaned ToolMessages whose `tool_call_id` doesn't match any AIMessage in the trimmed result.\n\n### Tests\n\nAdded 2 regression tests:\n- `test_trim_messages_preserves_tool_pairs_last_strategy` \u2014 verifies no orphaned ToolMessages in trimmed output\n- `test_trim_messages_reversed_order_valid_for_token_counter` \u2014 verifies tool chain ordering is maintained in all token counter calls\n\nAll 23 existing trim_messages tests pass with zero regressions.",
+        "state": "open",
+        "author": "giulio-leone",
+        "created_at": "2026-02-28T16:56:41Z",
+        "comments": [
+            {
+                "comment_id": "3979029543",
+                "user": "giulio-leone",
+                "body": "All actual tests, lint, and type checks pass (85/87). The only failing checks are CodSpeed Benchmarks (requires main branch baseline) and the derived \"CI Success\" meta-check. These are infrastructure limitations with fork PRs, not code issues. Ready for review.",
+                "created_at": "2026-03-01T03:59:45Z"
+            }
+        ]
+    },
+    {
+        "source_id": "github_issue_35486",
+        "url": "https://github.com/langchain-ai/langchain/pull/35486",
+        "title": "fix(openai): ensure stream=False in payload when disable_streaming is active",
+        "body": "## Summary\n\nFixes #35436\n\nWhen `disable_streaming='tool_calling'` (or `True`) routes execution through `_generate`/`_agenerate` instead of `_stream`/`_astream`, the request payload still contained `stream=True` because `_default_params` unconditionally includes `\"stream\": self.streaming`.\n\nThis caused the OpenAI client to return an `AsyncStream` object instead of a `ChatCompletion`, leading to a crash in `_create_chat_result` when calling `response.model_dump()`.\n\n## Root Cause\n\n`_default_params` (line 1113) hardcodes `\"stream\": self.streaming`. When `self.streaming=True` and `disable_streaming` routes through `_generate`/`_agenerate` (the non-streaming code path), the payload still has `stream: True`, causing the API to return a stream iterator.\n\n## Fix\n\nExplicitly set `payload['stream'] = False` at the top of both `_generate` and `_agenerate`. These methods are the non-streaming code path by definition \u2014 they should never send `stream: True` to the API.\n\n## Tests\n\nAdded `test_disable_streaming_payload_stream_false` and its async variant. Both verify that when `streaming=True` + `disable_streaming='tool_calling'` + tools are bound, the actual API payload has `stream=False`.",
+        "state": "open",
+        "author": "giulio-leone",
+        "created_at": "2026-02-28T16:28:01Z",
+        "comments": [
+            {
+                "comment_id": "3977390312",
+                "user": "codspeed-hq[bot]",
+                "body": "<!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->\n## Merging this PR will **not alter performance**\n\n\n\n\n`\u2705 6` untouched benchmarks  \n`\u23e9 30` skipped benchmarks[^skipped]  \n\n\n\n---\n\n<sub>Comparing <code>giulio-leone:fix/disable-streaming-tool-calling-crash</code> (f1ebd9f) with <code>master</code> (e939c96)</sub>\n\n<a href=\"https://codspeed.io/langchain-ai/langchain/branches/giulio-leone%3Afix%2Fdisable-streaming-tool-calling-crash?utm_source=github&utm_medium=comment-v2&utm_content=button\">\n  <picture>\n    <source media=\"(prefers-color-scheme: dark)\" srcset=\"https://codspeed.io/pr-report/open-in-codspeed-dark.svg\">\n    <source media=\"(prefers-color-scheme: light)\" srcset=\"https://codspeed.io/pr-report/open-in-codspeed-light.svg\">\n    <img alt=\"Open in CodSpeed\" src=\"https://codspeed.io/pr-report/open-in-codspeed-light.svg\" width=\"169\" height=\"32\">\n  </picture>\n</a>\n\n\n[^skipped]: 30 benchmarks were skipped, so the baseline results were used instead. If they were deleted from the codebase, [click here and archive them to remove them from the performance reports](https://codspeed.io/langchain-ai/langchain/branches/giulio-leone%3Afix%2Fdisable-streaming-tool-calling-crash?q=is%3Askipped&utm_source=github&utm_medium=comment-v2&utm_content=archive).\n",
+                "created_at": "2026-02-28T16:34:29Z"
+            },
+            {
+                "comment_id": "3977933667",
+                "user": "giulio-leone",
+                "body": "Friendly ping \u2014 CI is green and this is ready for review. Happy to address any feedback. Thanks!",
+                "created_at": "2026-02-28T21:32:56Z"
+            },
+            {
+                "comment_id": "3978982813",
+                "user": "giulio-leone",
+                "body": "All 79 CI checks pass. Ensures stream=False in payload when disable_streaming is set. Ready for review.",
+                "created_at": "2026-03-01T03:32:14Z"
+            }
+        ]
+    },
+    {
+        "source_id": "github_issue_35485",
+        "url": "https://github.com/langchain-ai/langchain/pull/35485",
+        "title": "fix(core): fix RunnableRetry.batch position corruption with return_exceptions",
+        "body": "## Summary\n\nFixes #35475\n\nWhen `batch()` is called with `return_exceptions=True` and some items succeed on retry while others permanently fail, the output positions get corrupted. A retry-successful item can overwrite the exception position of a permanently-failed item.\n\n## Root Cause\n\nThe reconstruction loop at lines 282-287 used `result.pop(0)` to fill positions not in `results_map`, but `result` contained the **full** last-attempt output \u2014 including items that succeeded on retry and were already placed into `results_map`. Popping sequentially skipped those successes and pulled the wrong element for each remaining position.\n\n### Example\n\nGiven inputs `[\"ok\", \"retry_then_ok\", \"always_fail\"]` with `stop_after_attempt=2`:\n\n1. **Attempt 1**: `ok` succeeds \u2192 `results_map[0]`; `retry_then_ok` and `always_fail` fail\n2. **Attempt 2**: `retry_then_ok` succeeds \u2192 `results_map[1]`; `always_fail` still fails\n3. **Reconstruction**: Position 2 is not in `results_map`, so `result.pop(0)` is called \u2014 but `result = [\"retry-result\", ValueError]`. The pop returns `\"retry-result\"` instead of the `ValueError`, corrupting position 2.\n\n## Fix\n\nMap the last-attempt results back to their original indices using `remaining_indices`, which correctly tracks the 1-to-1 correspondence between result offsets and original input positions. Both sync and async paths are fixed.\n\n## Tests\n\nAdded `test_retry_batch_return_exceptions_position_integrity` and its async variant, reproducing the exact scenario from the issue.",
+        "state": "open",
+        "author": "giulio-leone",
+        "created_at": "2026-02-28T16:23:04Z",
+        "comments": [
+            {
+                "comment_id": "3979029580",
+                "user": "giulio-leone",
+                "body": "All actual tests, lint, and type checks pass (85/87). The only failing checks are CodSpeed Benchmarks (requires main branch baseline) and the derived \"CI Success\" meta-check. These are infrastructure limitations with fork PRs, not code issues. Ready for review.",
+                "created_at": "2026-03-01T03:59:46Z"
+            }
+        ]
+    },
+    {
+        "source_id": "github_issue_35484",
+        "url": "https://github.com/langchain-ai/langchain/pull/35484",
+        "title": "fix(huggingface): use PydanticOutputParser for Pydantic models in with_structured_output",
+        "body": "## Summary\n- When a Pydantic `BaseModel` subclass is passed as the `schema` to `ChatHuggingFace.with_structured_output()`, use `PydanticOutputParser` instead of `JsonOutputParser` so that the output is returned as a validated Pydantic model instance rather than a plain dict.\n- Dict/JSON schemas continue to use `JsonOutputParser` (backward compatible).\n- Applies to both `json_schema` and `json_mode` methods; `function_calling` is unaffected.\n\n## Motivation\nFixes #32197. Previously, `with_structured_output()` always used `JsonOutputParser()` regardless of schema type, which meant:\n1. Pydantic model schemas returned plain dicts instead of validated model instances\n2. When `include_raw=True`, parsing retries wasted tokens re-parsing to dicts\n\nThis aligns `ChatHuggingFace` with the behavior of other partner integrations (OpenAI, Groq, Fireworks) that already use `PydanticOutputParser` for Pydantic schemas.\n\n## Changes\n- **`libs/partners/huggingface/langchain_huggingface/chat_models/huggingface.py`**: Added `PydanticOutputParser` import; in the `json_schema` and `json_mode` branches of `with_structured_output`, detect Pydantic schemas via the existing `is_pydantic_schema` flag and use the appropriate parser.\n- **`libs/partners/huggingface/tests/unit_tests/test_chat_models.py`**: Added 6 unit tests covering Pydantic vs dict schemas for both methods, no-schema json_mode, and include_raw with Pydantic.\n\n## Test plan\n- [x] All 6 new unit tests pass (`test_with_structured_output_json_schema_pydantic`, `test_with_structured_output_json_schema_dict`, `test_with_structured_output_json_mode_pydantic`, `test_with_structured_output_json_mode_dict`, `test_with_structured_output_json_mode_no_schema`, `test_with_structured_output_include_raw_pydantic`)\n- [x] All 32 existing unit tests in `test_chat_models.py` continue to pass\n- [x] Ruff linting passes on both changed files\n\n> This contribution was made with assistance from an AI agent (Claude).\n\n\ud83e\udd16 Generated with [Claude Code](https://claude.com/claude-code)",
+        "state": "open",
+        "author": "JiwaniZakir",
+        "created_at": "2026-02-28T14:44:53Z",
+        "comments": []
+    },
+    {
+        "source_id": "github_issue_35483",
+        "url": "https://github.com/langchain-ai/langchain/issues/35483",
+        "title": "langchain-huggingface==1.2.1 was not released to pypi",
+        "body": "### Checked other resources\n\n- [x] This is a bug, not a usage question.\n- [x] I added a clear and descriptive title that summarizes this issue.\n- [x] I used the GitHub search to find a similar question and didn't find it.\n- [x] I am sure that this is a bug in LangChain rather than my code.\n- [x] The bug is not resolved by updating to the latest stable version of LangChain (or the specific integration package).\n- [x] This is not related to the langchain-community package.\n- [x] I posted a self-contained, minimal, reproducible example. A maintainer can copy it and run it AS IS.\n\n### Package (Required)\n\n- [ ] langchain\n- [ ] langchain-openai\n- [ ] langchain-anthropic\n- [ ] langchain-classic\n- [ ] langchain-core\n- [ ] langchain-model-profiles\n- [ ] langchain-tests\n- [ ] langchain-text-splitters\n- [ ] langchain-chroma\n- [ ] langchain-deepseek\n- [ ] langchain-exa\n- [ ] langchain-fireworks\n- [ ] langchain-groq\n- [x] langchain-huggingface\n- [ ] langchain-mistralai\n- [ ] langchain-nomic\n- [ ] langchain-ollama\n- [ ] langchain-openrouter\n- [ ] langchain-perplexity\n- [ ] langchain-qdrant\n- [ ] langchain-xai\n- [ ] Other / not sure / general\n\n### Related Issues / PRs\n\n#35182 \n\n### Reproduction Steps / Example Code (Python)\n\n```python\npip install langchain-huggingface==1.2.1\n```\n\n### Error Message and Stack Trace (if applicable)\n\n```shell\nERROR: Could not find a version that satisfies the requirement langchain-huggingface==1.2.1 (from versions: 0.0.1, 0.0.2, 0.0.3, 0.1.0.dev1, 0.1.0, 0.1.1, 0.1.2, 0.2.0, 0.3.0, 0.3.1, 1.0.0a1, 1.0.0, 1.0.1, 1.1.0, 1.2.0)\nERROR: No matching distribution found for langchain-huggingface==1.2.1\n```\n\n### Description\n\nDespite #35182, langchain-huggingface==1.2.1 has not been released to pypi and installing this version with pip does not work\n\n### System Info\n\nSystem Information\n------------------\n> OS:  Linux\n> OS Version:  #1 SMP Mon Feb  2 12:27:57 UTC 2026\n> Python Version:  3.12.12 (main, Oct 10 2025, 08:52:57) [GCC 11.4.0]\n\nPackage Information\n-------------------\n> langchain_core: 1.2.15\n> langchain: 1.2.10\n> langsmith: 0.7.6\n> langgraph_sdk: 0.3.9\n\nOptional packages not installed\n-------------------------------\n> deepagents\n> deepagents-cli\n\nOther Dependencies\n------------------\n> google-adk: 1.25.1\n> httpx: 0.28.1\n> jsonpatch: 1.33\n> langgraph: 1.0.9\n> opentelemetry-api: 1.38.0\n> opentelemetry-exporter-otlp-proto-http: 1.38.0\n> opentelemetry-sdk: 1.38.0\n> orjson: 3.11.7\n> packaging: 26.0\n> pydantic: 2.12.3\n> pytest: 8.4.2\n> pyyaml: 6.0.3\n> requests: 2.32.4\n> requests-toolbelt: 1.0.0\n> rich: 13.9.4\n> tenacity: 9.1.4\n> typing-extensions: 4.15.0\n> uuid-utils: 0.14.1\n> wrapt: 2.1.1\n> xxhash: 3.6.0\n> zstandard: 0.25.0",
+        "state": "open",
+        "author": "MichaelKarpe",
+        "created_at": "2026-02-28T13:04:49Z",
+        "comments": [
+            {
+                "comment_id": "3977373010",
+                "user": "Shivangisharma4",
+                "body": "Hey @MichaelKarpe ,  I took a look at this, The version bump to 1.2.1 was correctly done in PR #35182 - pyproject.toml and uv.lock are both updated. But it looks like the release workflow (_release.yml) was never triggered after the merge, since there's no langchain-huggingface==1.2.1 git tag in the repo (which gets created automatically when the workflow completes successfully).",
+                "created_at": "2026-02-28T16:19:55Z"
+            }
+        ]
+    },
+    {
+        "source_id": "github_issue_35482",
+        "url": "https://github.com/langchain-ai/langchain/pull/35482",
+        "title": "fix(openai): fix if/elif chain and unhandled tool name in _consolidate_calls",
+        "body": "## problem\n\n`_consolidate_calls` in `_compat.py` has two issues:\n\n1. the `file_search` branch uses a bare `if` instead of `elif`, breaking the mutually exclusive chain that starts with `web_search`. functionally this doesn't cause wrong results today since a tool name can only match one branch, but it means the `file_search` condition is evaluated even after `web_search` already matched \u2014 and more importantly, the downstream `elif`/`else` chain is attached to `file_search` rather than the full dispatch.\n\n2. when a `server_tool_call` has a name that doesn't match any known tool (`web_search`, `file_search`, `code_interpreter`, `remote_mcp`, `mcp_list_tools`), the `else` branch does `pass` but the code still falls through to `yield collapsed` \u2014 where `collapsed` was never assigned, causing an `UnboundLocalError`. this can happen if openai adds new server tool types in the future.\n\n## fix\n\n- change `file_search`'s `if` to `elif` so the entire dispatch is a single `if/elif/else` chain\n- in the `else` branch, emit both the call and result items unchanged instead of silently dropping them\n\n## tests\n\nadded two tests:\n- `test_consolidate_calls_unknown_tool_name`: verifies that unrecognized tool names pass through both items without error\n- `test_consolidate_calls_web_search`: verifies that web_search pairs are still collapsed correctly",
+        "state": "open",
+        "author": "umut-polat",
+        "created_at": "2026-02-28T12:27:10Z",
+        "comments": [
+            {
+                "comment_id": "3977110711",
+                "user": "codspeed-hq[bot]",
+                "body": "<!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->\n## Merging this PR will **not alter performance**\n\n\n\n\n`\u2705 6` untouched benchmarks  \n`\u23e9 30` skipped benchmarks[^skipped]  \n\n\n\n---\n\n<sub>Comparing <code>umut-polat:fix/consolidate-calls-elif</code> (3990f54) with <code>master</code> (e939c96)</sub>\n\n<a href=\"https://codspeed.io/langchain-ai/langchain/branches/umut-polat%3Afix%2Fconsolidate-calls-elif?utm_source=github&utm_medium=comment-v2&utm_content=button\">\n  <picture>\n    <source media=\"(prefers-color-scheme: dark)\" srcset=\"https://codspeed.io/pr-report/open-in-codspeed-dark.svg\">\n    <source media=\"(prefers-color-scheme: light)\" srcset=\"https://codspeed.io/pr-report/open-in-codspeed-light.svg\">\n    <img alt=\"Open in CodSpeed\" src=\"https://codspeed.io/pr-report/open-in-codspeed-light.svg\" width=\"169\" height=\"32\">\n  </picture>\n</a>\n\n\n[^skipped]: 30 benchmarks were skipped, so the baseline results were used instead. If they were deleted from the codebase, [click here and archive them to remove them from the performance reports](https://codspeed.io/langchain-ai/langchain/branches/umut-polat%3Afix%2Fconsolidate-calls-elif?q=is%3Askipped&utm_source=github&utm_medium=comment-v2&utm_content=archive).\n",
+                "created_at": "2026-02-28T12:37:10Z"
+            }
+        ]
+    },
+    {
+        "source_id": "github_issue_35481",
+        "url": "https://github.com/langchain-ai/langchain/pull/35481",
+        "title": "fix(core): guard merge_lists against non-dict elements when matching by index",
+        "body": "## Problem\n\n`merge_lists` crashes with `TypeError: string indices must be integers, not 'str'` when the merged list contains a mix of strings and dicts with `\"index\"` keys.\n\nThis happens with Mistral streaming responses that include inline citations \u2014 the content array alternates between text strings and reference dicts:\n\n```python\nmerged = [\n    \"start answer...\",\n    {\"type\": \"reference\", \"index\": 0, \"reference_ids\": [\"iKcb2CAQ7\"]},\n    \"other answer...\"\n]\nother = [{\"type\": \"reference\", \"index\": 0, \"reference_ids\": [\"DGqzzmqc3\"]}]\n\nmerge_lists(merged, other)  # TypeError!\n```\n\n## Root Cause\n\nThe index-matching list comprehension iterates over all elements in `merged` and checks `\"index\" in e_left`. For string elements, Python's `in` operator checks for substring containment (which works), but then `e_left[\"index\"]` tries to index a string with a string key, which raises `TypeError`.\n\n## Fix\n\nAdd `isinstance(e_left, dict)` guard before accessing dict-specific attributes.\n\n## Tests\n\nAdded regression test with mixed strings and dicts (the exact pattern from the Mistral streaming scenario). 81 tests pass.\n\nFixes #35259",
+        "state": "open",
+        "author": "giulio-leone",
+        "created_at": "2026-02-28T09:54:49Z",
+        "comments": [
+            {
+                "comment_id": "3979029614",
+                "user": "giulio-leone",
+                "body": "All actual tests, lint, and type checks pass (85/87). The only failing checks are CodSpeed Benchmarks (requires main branch baseline) and the derived \"CI Success\" meta-check. These are infrastructure limitations with fork PRs, not code issues. Ready for review.",
+                "created_at": "2026-03-01T03:59:47Z"
+            }
+        ]
+    },
+    {
+        "source_id": "github_issue_35480",
+        "url": "https://github.com/langchain-ai/langchain/pull/35480",
+        "title": "fix(openai): strip stream param in _generate/_agenerate to fix disable_streaming crash",
+        "body": "## Problem\n\nWhen `disable_streaming=\"tool_calling\"` triggers, `BaseChatModel._agenerate_with_cache` calls `_agenerate()` instead of `_astream()`. But `_get_request_payload()` includes `stream=True` from `_default_params`, so the OpenAI client returns an `AsyncStream` object instead of a `ChatCompletion`. The subsequent `response.model_dump()` then crashes:\n\n```\nAttributeError: 'AsyncStream' object has no attribute 'model_dump'\n```\n\nThis makes `disable_streaming=\"tool_calling\"` completely unusable with `ChatOpenAI` when `streaming=True`.\n\n## Root Cause\n\n`BaseChatOpenAI._default_params` hardcodes `\"stream\": self.streaming`. When `self.streaming=True`, this ends up in the payload for `_generate()/_agenerate()` \u2014 which are the non-streaming code paths. The `response_format` branch already handled this by popping `stream`, but the regular completion path did not.\n\n## Fix\n\nPop `stream` from the payload at the start of both `_generate()` and `_agenerate()` since these are non-streaming code paths that should never send `stream=True` to the API.\n\n## Tests\n\nAll 181 existing unit tests pass (2 consecutive clean runs).\n\nFixes #35436",
+        "state": "closed",
+        "author": "giulio-leone",
+        "created_at": "2026-02-28T09:49:07Z",
+        "comments": [
+            {
+                "comment_id": "3976768014",
+                "user": "codspeed-hq[bot]",
+                "body": "<!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->\n## Merging this PR will **not alter performance**\n\n\n\n\n`\u2705 6` untouched benchmarks  \n`\u23e9 30` skipped benchmarks[^skipped]  \n\n\n\n---\n\n<sub>Comparing <code>giulio-leone:fix/openai-disable-streaming-tool-calling-crash</code> (41377ad) with <code>master</code> (e939c96)</sub>\n\n<a href=\"https://codspeed.io/langchain-ai/langchain/branches/giulio-leone%3Afix%2Fopenai-disable-streaming-tool-calling-crash?utm_source=github&utm_medium=comment-v2&utm_content=button\">\n  <picture>\n    <source media=\"(prefers-color-scheme: dark)\" srcset=\"https://codspeed.io/pr-report/open-in-codspeed-dark.svg\">\n    <source media=\"(prefers-color-scheme: light)\" srcset=\"https://codspeed.io/pr-report/open-in-codspeed-light.svg\">\n    <img alt=\"Open in CodSpeed\" src=\"https://codspeed.io/pr-report/open-in-codspeed-light.svg\" width=\"169\" height=\"32\">\n  </picture>\n</a>\n\n\n[^skipped]: 30 benchmarks were skipped, so the baseline results were used instead. If they were deleted from the codebase, [click here and archive them to remove them from the performance reports](https://codspeed.io/langchain-ai/langchain/branches/giulio-leone%3Afix%2Fopenai-disable-streaming-tool-calling-crash?q=is%3Askipped&utm_source=github&utm_medium=comment-v2&utm_content=archive).\n",
+                "created_at": "2026-02-28T09:55:41Z"
+            },
+            {
+                "comment_id": "3977530999",
+                "user": "giulio-leone",
+                "body": "Closing in favor of #35486 which has a more thorough implementation.",
+                "created_at": "2026-02-28T18:18:53Z"
+            }
+        ]
+    },
+    {
+        "source_id": "github_issue_35479",
+        "url": "https://github.com/langchain-ai/langchain/pull/35479",
+        "title": "fix(core): cancel pending tasks in abatch_as_completed on exception or early exit",
+        "body": "## Problem\n\n`abatch_as_completed` does not cancel pending tasks when the consumer stops iterating (via exception or `break`). This means remaining `ainvoke` calls continue running in the background and can still complete API calls, incurring extra cost even though their results will never be consumed.\n\nThe sync `batch_as_completed` already handles this correctly with a `try/finally` block that cancels remaining futures.\n\n### Reproduction (from #35419)\n\n```python\nasync def llm_call(prompt: str) -> str:\n    if prompt == \"bad\":\n        raise RuntimeError(\"429 rate limit\")\n    await asyncio.sleep(0.25)\n    print(f\"CHARGED: {prompt}\")  # still runs after exception\n    return f\"ok:{prompt}\"\n\nr = RunnableLambda(llm_call)\nasync for _, out in r.abatch_as_completed([\"bad\", \"a\", \"b\"]):\n    print(out)\n# Expected: only the RuntimeError, no CHARGED output\n# Actual: RuntimeError + CHARGED: a + CHARGED: b\n```\n\n## Root Cause\n\n`abatch_as_completed` passed coroutines directly to `asyncio.as_completed()`, which wraps them in tasks internally. Since the caller never held references to those tasks, there was no way to cancel them when iteration stopped.\n\n## Fix\n\n1. Create explicit `asyncio.Task` objects via `asyncio.ensure_future()` so we hold references\n2. Wrap the yield loop in `try/finally` that cancels any unfinished tasks (mirroring the sync version)\n3. `await asyncio.gather(*tasks, return_exceptions=True)` to suppress `CancelledError`\n\n## Tests\n\nAdded two regression tests:\n- `test_abatch_as_completed_cancels_on_exception`: verifies no tasks complete after one raises\n- `test_abatch_as_completed_cancels_on_break`: verifies no tasks complete after consumer breaks\n\nAll 6 concurrency tests pass.\n\nFixes #35419",
+        "state": "closed",
+        "author": "giulio-leone",
+        "created_at": "2026-02-28T09:40:58Z",
+        "comments": [
+            {
+                "comment_id": "3977209243",
+                "user": "gautamvarmadatla",
+                "body": "Hi @giulio-leone,\r\nI already opened a PR for this fix last week, and your PR makes the exact same change. I\u2019ve mentioned this multiple times in the issue. Could you please close your PR and avoid submitting AI-generated duplicate fixes, so we don\u2019t duplicate effort?\r\n",
+                "created_at": "2026-02-28T14:03:04Z"
+            }
+        ]
+    },
+    {
+        "source_id": "github_issue_35478",
+        "url": "https://github.com/langchain-ai/langchain/pull/35478",
+        "title": "fix(core): prevent RunnableRetry.batch from returning corrupted outputs on partial failure",
+        "body": "## Summary\n\nFixes #35475\n\nWhen using `RunnableLambda(...).with_retry(...).batch(..., return_exceptions=True)`, if some items succeed on retry while others permanently fail, the failed items' positions in the output list can contain a successful result from a different item instead of the expected exception.\n\n## Root Cause\n\nIn both `_batch()` and `_abatch()`, after the retry loop completes:\n\n1. `result` holds the raw outputs from the **last** retry attempt (both successes and exceptions)\n2. Successful outputs from that attempt are added to `results_map`, but are **not removed** from `result`\n3. The output-assembly loop uses `result.pop(0)` for items not in `results_map`\n4. This pops a successful result (from a different item) instead of the exception for the permanently-failed item\n\n**Example** with `stop_after_attempt=2` and inputs `['ok', 'retry_then_ok', 'always_fail']`:\n- After attempt 2: `result = ['retry-result', ValueError()]`, `results_map = {0: 'ok-result', 1: 'retry-result'}`\n- For index 2 (not in `results_map`): `result.pop(0)` returns `'retry-result'` instead of `ValueError()`\n\n## Fix\n\nFilter `result` to keep only exceptions before the output-assembly loop:\n```python\nresult = [r for r in result if isinstance(r, Exception)]\n```\n\nThis ensures each permanently-failed item gets its actual exception. Applied to both sync `_batch` and async `_abatch`.\n\n## Tests\n\nAdded:\n- `test_retry_batch_no_corrupted_outputs_on_partial_failure` (sync)\n- `test_async_retry_batch_no_corrupted_outputs_on_partial_failure` (async)\n\nBoth verify that the third item (always fails) is an exception while the first two items have their correct results. All 6 retry tests pass.",
+        "state": "closed",
+        "author": "giulio-leone",
+        "created_at": "2026-02-28T09:07:03Z",
+        "comments": [
+            {
+                "comment_id": "3977531000",
+                "user": "giulio-leone",
+                "body": "Closing in favor of #35485 which has the correct fix.",
+                "created_at": "2026-02-28T18:18:53Z"
+            }
+        ]
+    },
+    {
+        "source_id": "github_issue_35477",
+        "url": "https://github.com/langchain-ai/langchain/pull/35477",
+        "title": "chore(model-profiles): refresh model profile data",
+        "body": "Automated refresh of model profile data for all in-monorepo partner\nintegrations via `langchain-profiles refresh`.\n\n\ud83e\udd16 Generated by the `refresh_model_profiles` workflow.",
+        "state": "closed",
+        "author": "langchain-model-profile-bot[bot]",
+        "created_at": "2026-02-28T08:05:58Z",
+        "comments": [
+            {
+                "comment_id": "3976639234",
+                "user": "codspeed-hq[bot]",
+                "body": "<!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->\n## Merging this PR will **not alter performance**\n\n\n\n\n`\u2705 1` untouched benchmark  \n`\u23e9 35` skipped benchmarks[^skipped]  \n\n\n\n---\n\n<sub>Comparing <code>bot/refresh-model-profiles</code> (60fa80b) with <code>master</code> (e939c96)</sub>\n\n<a href=\"https://codspeed.io/langchain-ai/langchain/branches/bot%2Frefresh-model-profiles?utm_source=github&utm_medium=comment-v2&utm_content=button\">\n  <picture>\n    <source media=\"(prefers-color-scheme: dark)\" srcset=\"https://codspeed.io/pr-report/open-in-codspeed-dark.svg\">\n    <source media=\"(prefers-color-scheme: light)\" srcset=\"https://codspeed.io/pr-report/open-in-codspeed-light.svg\">\n    <img alt=\"Open in CodSpeed\" src=\"https://codspeed.io/pr-report/open-in-codspeed-light.svg\" width=\"169\" height=\"32\">\n  </picture>\n</a>\n\n\n[^skipped]: 35 benchmarks were skipped, so the baseline results were used instead. If they were deleted from the codebase, [click here and archive them to remove them from the performance reports](https://codspeed.io/langchain-ai/langchain/branches/bot%2Frefresh-model-profiles?q=is%3Askipped&utm_source=github&utm_medium=comment-v2&utm_content=archive).\n",
+                "created_at": "2026-02-28T08:08:54Z"
+            }
+        ]
+    },
+    {
+        "source_id": "github_issue_35476",
+        "url": "https://github.com/langchain-ai/langchain/pull/35476",
+        "title": "fix(core): RunnableRetry.batch corrupted outputs on partial retry success",
+        "body": "## Summary\n\nFixes #35475\n\n`RunnableRetry.batch()` and `abatch()` return corrupted outputs when some items succeed on retry while others still fail after all attempts. A successful result appears in the output position of a permanently-failed item.\n\n## Root Cause\n\nAfter retries exhaust, the output assembly loop (lines 282-288) uses `result.pop(0)` on the raw last-batch result list. But `result` still contains **both** successful outputs (already stored in `results_map`) **and** exceptions. Popping from the front returns a successful result instead of the expected exception.\n\n**Example:** With inputs `[\"ok\", \"retry_then_ok\", \"always_fail\"]`:\n1. After final retry: `result = [\"retry-result\", ValueError()]`\n2. `\"retry-result\"` is already in `results_map[1]`\n3. For failed index 2: `result.pop(0)` \u2192 `\"retry-result\"` \u274c (should be `ValueError`)\n\n## Fix\n\nFilter the last-batch result to only contain exceptions before assembling the output list, since successful results are already captured in `results_map`:\n\n```python\nexceptions = [r for r in result if isinstance(r, BaseException)]\n```\n\nApplied to both `_batch()` and `_abatch()`.\n\n## Tests\n\nAdded 2 regression tests (`test_retry_batch_mixed_success_and_permanent_failure` + async variant) that reproduce the exact issue scenario. All 6 retry-related tests pass.\n\n```\n6 passed in 0.75s\n```",
+        "state": "closed",
+        "author": "giulio-leone",
+        "created_at": "2026-02-28T07:01:04Z",
+        "comments": [
+            {
+                "comment_id": "3977530997",
+                "user": "giulio-leone",
+                "body": "Closing in favor of #35485 which has the correct fix.",
+                "created_at": "2026-02-28T18:18:53Z"
+            }
+        ]
+    },
+    {
+        "source_id": "github_issue_35475",
+        "url": "https://github.com/langchain-ai/langchain/issues/35475",
+        "title": "RunnableRetry.batch/abatch can return corrupted outputs when some items succeed on retry and others still fail",
+        "body": "### Checked other resources\n\n- [x] This is a bug, not a usage question.\n- [x] I added a clear and descriptive title that summarizes this issue.\n- [x] I used the GitHub search to find a similar question and didn't find it.\n- [x] I am sure that this is a bug in LangChain rather than my code.\n- [x] The bug is not resolved by updating to the latest stable version of LangChain (or the specific integration package).\n- [x] This is not related to the langchain-community package.\n- [x] I posted a self-contained, minimal, reproducible example. A maintainer can copy it and run it AS IS.\n\n### Package (Required)\n\n- [ ] langchain\n- [ ] langchain-openai\n- [ ] langchain-anthropic\n- [ ] langchain-classic\n- [x] langchain-core\n- [ ] langchain-model-profiles\n- [ ] langchain-tests\n- [ ] langchain-text-splitters\n- [ ] langchain-chroma\n- [ ] langchain-deepseek\n- [ ] langchain-exa\n- [ ] langchain-fireworks\n- [ ] langchain-groq\n- [ ] langchain-huggingface\n- [ ] langchain-mistralai\n- [ ] langchain-nomic\n- [ ] langchain-ollama\n- [ ] langchain-openrouter\n- [ ] langchain-perplexity\n- [ ] langchain-qdrant\n- [ ] langchain-xai\n- [ ] Other / not sure / general\n\n### Related Issues / PRs\n\n_No response_\n\n### Reproduction Steps / Example Code (Python)\n\n```python\nfrom langchain_core.runnables import RunnableLambda\n\n\nfailed_once = False\n\n\ndef process_item(name: str) -> str:\n    global failed_once\n\n    if name == \"ok\":\n        return \"ok-result\"\n    if name == \"retry_then_ok\":\n        if not failed_once:\n            failed_once = True\n            raise ValueError()\n        return \"retry-result\"\n    raise ValueError()\n\n\nrunnable = RunnableLambda(process_item).with_retry(\n    stop_after_attempt=2,\n    retry_if_exception_type=(ValueError,),\n    wait_exponential_jitter=False,\n)\n\nresult = runnable.batch(\n    [\"ok\", \"retry_then_ok\", \"always_fail\"],\n    return_exceptions=True,\n)\n\n# Expected: the third item is an exception\nprint(result)\nassert isinstance(result[2], Exception)\n```\n\n### Error Message and Stack Trace (if applicable)\n\n```shell\n\n```\n\n### Description\n\n* I'm using `RunnableLambda(...).with_retry(...).batch(...)` with `return_exceptions=True`.\n* I expect an input that still fails after all retry attempts to remain an exception in the matching output position.\n* Instead, if one item succeeds on retry while another still fails, the failing item can be replaced by the successful item's output.\n\n### System Info\n\nSystem Information\n------------------\n> OS:  Linux\n> OS Version:  #1 SMP PREEMPT_DYNAMIC Thu Jun  5 18:30:46 UTC 2025\n> Python Version:  3.10.12 (main, Jan 26 2026, 14:55:28) [GCC 11.4.0]\n\nPackage Information\n-------------------\n> langchain_core: 1.2.16\n> langchain: 1.2.10\n> langsmith: 0.7.9\n> langchain_openai: 1.1.10\n> langgraph_sdk: 0.3.9\n\nOptional packages not installed\n-------------------------------\n> deepagents\n> deepagents-cli\n\nOther Dependencies\n------------------\n> httpx: 0.28.1\n> jsonpatch: 1.33\n> langgraph: 1.0.10\n> openai: 2.24.0\n> orjson: 3.11.7\n> packaging: 26.0\n> pydantic: 2.12.5\n> pyyaml: 6.0.3\n> requests: 2.32.5\n> requests-toolbelt: 1.0.0\n> tenacity: 9.1.4\n> tiktoken: 0.12.0\n> typing-extensions: 4.15.0\n> uuid-utils: 0.14.1\n> xxhash: 3.6.0\n> zstandard: 0.25.0",
+        "state": "open",
+        "author": "yangbaechu",
+        "created_at": "2026-02-28T06:32:38Z",
+        "comments": [
+            {
+                "comment_id": "3976527888",
+                "user": "yangbaechu",
+                "body": "I\u2019d like to work on this. My intended approach would be to add regression tests next to the existing retry batch tests `test_runnable.py`, then fix the final result assembly for this case. Does this align with maintainer expectations?",
+                "created_at": "2026-02-28T06:36:39Z"
+            }
+        ]
+    },
+    {
+        "source_id": "github_issue_35474",
+        "url": "https://github.com/langchain-ai/langchain/pull/35474",
+        "title": "perf(core): optimize callback manager hot paths",
+        "body": "## Summary\n\nOptimizes the langchain_core callback manager hot paths identified by profiling langgraph's `react_agent` benchmark, where callback overhead accounts for ~35% of runtime.\n\n- **`get_child()`**: pass state directly to constructor instead of calling `set_handlers`/`add_tags`/`add_metadata` sequentially (**-22%**)\n- **`add_tags()`**: use set-based dedup instead of O(n) list scans per tag, early return when tags list is empty (**-70% on duplicate tags**)\n- **`handle_event`/`ahandle_event`**: early return when handlers list is empty\n- **`_configure()`**: skip throwaway `CallbackManager` construction on the common path where `inheritable_callbacks` is provided\n\n### Behavioral note on `add_tags()`\n\nThe old `add_tags()` had \"move to end\" semantics \u2014 existing tags were removed and re-appended. The new implementation skips duplicates instead. This is safe because tag order is not meaningful across the codebase: `merge_configs()` sorts, `LangChainTracer._start_trace()` sorts, `BaseCallbackManager.merge()` uses sets, and tests compare with `sorted()`.\n\n## Test plan\n\n- [x] All 1701 `langchain-core` unit tests passing\n- [ ] Run langgraph `react_agent` benchmark to validate end-to-end improvement\n\n> [!NOTE]\n> This PR was developed with AI agent assistance (Claude Code).",
+        "state": "open",
+        "author": "jkennedyvz",
+        "created_at": "2026-02-28T05:39:08Z",
+        "comments": [
+            {
+                "comment_id": "3976488684",
+                "user": "codspeed-hq[bot]",
+                "body": "<!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->\n## Merging this PR will **not alter performance**\n\n\n\n\n`\u2705 1` untouched benchmark  \n`\u23e9 35` skipped benchmarks[^skipped]  \n\n\n\n---\n\n<sub>Comparing <code>jk/optimizations</code> (1867503) with <code>master</code> (e939c96)</sub>\n\n<a href=\"https://codspeed.io/langchain-ai/langchain/branches/jk%2Foptimizations?utm_source=github&utm_medium=comment-v2&utm_content=button\">\n  <picture>\n    <source media=\"(prefers-color-scheme: dark)\" srcset=\"https://codspeed.io/pr-report/open-in-codspeed-dark.svg\">\n    <source media=\"(prefers-color-scheme: light)\" srcset=\"https://codspeed.io/pr-report/open-in-codspeed-light.svg\">\n    <img alt=\"Open in CodSpeed\" src=\"https://codspeed.io/pr-report/open-in-codspeed-light.svg\" width=\"169\" height=\"32\">\n  </picture>\n</a>\n\n\n[^skipped]: 35 benchmarks were skipped, so the baseline results were used instead. If they were deleted from the codebase, [click here and archive them to remove them from the performance reports](https://codspeed.io/langchain-ai/langchain/branches/jk%2Foptimizations?q=is%3Askipped&utm_source=github&utm_medium=comment-v2&utm_content=archive).\n",
+                "created_at": "2026-02-28T06:13:56Z"
+            }
+        ]
+    },
+    {
+        "source_id": "github_issue_35473",
+        "url": "https://github.com/langchain-ai/langchain/pull/35473",
+        "title": "perf(core): use deque for pipeline batch output reassembly in RunnableSequence",
+        "body": "## Problem\n\n`RunnableSequence.batch()` and `abatch()` use `list.pop(0)` to reassemble outputs by merging a `failed_inputs_map` with remaining successful inputs consumed front-to-back.\n\n`list.pop(0)` is **O(n)** per call because CPython must shift every remaining element. For large batch sizes this accumulates to **O(n\u00b2)** total work.\n\n## Solution\n\nConvert the copied inputs list to a `collections.deque` and replace `.pop(0)` with `.popleft()`, which is **O(1)** amortised. The `collections` module is already imported in this file.\n\n## Testing\n\nAll 6 batch-related tests pass:\n- `test_retry_batch_preserves_order`\n- `test_async_retry_batch_preserves_order`\n- `test_seq_batch_return_exceptions`\n- `test_seq_abatch_return_exceptions`\n- `test_runnable_branch_batch`\n- `test_runnable_branch_abatch`\n\n(2 consecutive clean runs)\n\nCo-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>",
+        "state": "closed",
+        "author": "giulio-leone",
+        "created_at": "2026-02-28T04:31:09Z",
+        "comments": [
+            {
+                "comment_id": "3977607096",
+                "user": "giulio-leone",
+                "body": "Closing \u2014 focusing on bug fixes with higher user impact.",
+                "created_at": "2026-02-28T19:13:42Z"
+            }
+        ]
+    },
+    {
+        "source_id": "github_issue_35472",
+        "url": "https://github.com/langchain-ai/langchain/pull/35472",
+        "title": "perf(core): use deque for result reassembly in RunnableRetry batch",
+        "body": "## Problem\n\n`RunnableRetry._batch()` and `_abatch()` use `list.pop(0)` to reassemble batch outputs by merging a `results_map` (already-succeeded inputs) with remaining results consumed front-to-back.\n\n`list.pop(0)` is **O(n)** per call because CPython must shift every remaining element. For large batch sizes this accumulates to **O(n\u00b2)** total work in the reassembly loop.\n\n## Solution\n\nConvert the `result` list to a `collections.deque` just before the reassembly loop and replace `.pop(0)` with `.popleft()`, which is **O(1)** amortised.\n\nThe original `result` list is not used after reassembly, so the conversion is safe. The deque is consumed exactly once, front-to-back.\n\n## Testing\n\nAll 4 retry-related tests pass:\n- `test_retrying`\n- `test_retry_batch_preserves_order`\n- `test_async_retry_batch_preserves_order`\n- `test_async_retrying`\n\n(2 consecutive clean runs)\n\nCo-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>",
+        "state": "closed",
+        "author": "giulio-leone",
+        "created_at": "2026-02-28T04:30:07Z",
+        "comments": [
+            {
+                "comment_id": "3977607043",
+                "user": "giulio-leone",
+                "body": "Closing \u2014 focusing on bug fixes with higher user impact.",
+                "created_at": "2026-02-28T19:13:41Z"
+            }
+        ]
+    },
+    {
+        "source_id": "github_issue_35471",
+        "url": "https://github.com/langchain-ai/langchain/pull/35471",
+        "title": "perf(text-splitters): use deque for line consumption in markdown splitter",
+        "body": "## Problem\n\n`ExperimentalMarkdownSyntaxTextSplitter.split_text()` and `_resolve_code_chunk()` use `list.pop(0)` to consume lines from the front of a list while parsing markdown.\n\n`list.pop(0)` is **O(n)** because CPython must shift every remaining element left by one slot. On large markdown documents with thousands of lines, this accumulates to **O(n\u00b2)** total work.\n\n## Solution\n\nConvert `raw_lines` to a `collections.deque` at the start of `split_text()` and replace all `.pop(0)` calls with `.popleft()`, which is **O(1)** amortised.\n\n`deque` supports the same boolean truthiness check and iteration used by both methods. The `_resolve_code_chunk` type annotation is updated to `deque[str]` to match.\n\n## Testing\n\nAll 9 markdown-related tests in `tests/unit_tests/test_text_splitters.py` pass (2 consecutive clean runs).\n\nCo-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>",
+        "state": "closed",
+        "author": "giulio-leone",
+        "created_at": "2026-02-28T04:27:56Z",
+        "comments": [
+            {
+                "comment_id": "3977606982",
+                "user": "giulio-leone",
+                "body": "Closing \u2014 focusing on bug fixes with higher user impact.",
+                "created_at": "2026-02-28T19:13:39Z"
+            }
+        ]
+    },
+    {
+        "source_id": "github_issue_35470",
+        "url": "https://github.com/langchain-ai/langchain/pull/35470",
+        "title": "fix(langchain): streaming path to apply middleware and guardrails",
+        "body": "This fixes the streaming bypass of middleware guardrails reported in #35011.\n\nThe problem: when using agent.stream() or agent.astream() with stream_mode=\"messages\", raw LLM tokens are emitted to the user through StreamMessagesHandler.on_llm_new_token before any after_model middleware has a chance to inspect them. This means output-guard middleware like PIIMiddleware (with apply_to_output=True) runs too late -- PII and other sensitive content has already leaked through the stream.\n\nThe fix has two parts:\n\n1. AgentMiddleware gets a new guards_output attribute (default False). Middleware that checks or transforms model output sets this to True. PIIMiddleware sets it when apply_to_output=True.\n\n2. Middleware with guards_output=True implements wrap_model_call / awrap_model_call to sanitize the model response inside the model node itself, before on_chain_end emits it. create_agent detects guards_output middleware and applies TAG_NOSTREAM to the model node's RunnableCallable. This prevents StreamMessagesHandler from emitting raw per-token chunks via on_llm_new_token, while the sanitized complete messages still reach the user through on_chain_end.\n\nThe existing after_model hook is kept for backward compatibility. It's idempotent since it sees the already-sanitized content from wrap_model_call.\n\nFiles changed:\n- agents/middleware/types.py: Added guards_output attribute to AgentMiddleware base class\n- agents/middleware/pii.py: Added wrap_model_call, awrap_model_call, and _process_model_response to PIIMiddleware; set guards_output = apply_to_output\n- agents/factory.py: Detect guards_output middleware and apply TAG_NOSTREAM to model node\n- tests: Added 8 tests for the streaming guard behavior (guards_output flag, wrap_model_call sanitization, TAG_NOSTREAM tagging, invoke compatibility)\n\nAll existing tests continue to pass (59 PII tests, 566 middleware tests, 707 agent tests).",
+        "state": "open",
+        "author": "Ratnaditya-J",
+        "created_at": "2026-02-28T04:15:11Z",
+        "comments": []
+    },
+    {
+        "source_id": "github_issue_35469",
+        "url": "https://github.com/langchain-ai/langchain/pull/35469",
+        "title": "fix(text-splitters): restore lazy imports for heavy optional dependencies",
+        "body": "## Summary\n\n- Moves `nltk`, `spacy`, `sentence-transformers`, and `konlpy` imports back inside class constructors/functions so they are only loaded when the respective splitter is actually instantiated\n- Adds a subprocess-based regression test to verify no heavy packages are imported at `langchain_text_splitters` load time\n\n## Why\n\nPR #32325 moved these optional dependency imports to module-level `try/except` blocks (to satisfy ruff's `PLC0415` rule). Since `__init__.py` imports all four splitter modules, this caused `import langchain_text_splitters` to eagerly load all optional heavy packages, resulting in:\n\n- A PyTorch NVML warning (`UserWarning: Can't initialize NVML`) on non-GPU machines\n- A ~650MB memory spike on import (74MB \u2192 736MB), vs ~50MB in 0.3.x\n\nThe fix restores the lazy import pattern with `# noqa: PLC0415` to suppress the linter rule, which is the correct trade-off when a dependency has high instantiation cost.\n\n## Review notes\n\n- The `PLC0415` suppressions are intentional \u2014 these are optional heavy dependencies that should never be loaded unless the user explicitly instantiates the splitter class\n- The regression test uses a subprocess for proper isolation (the test file itself imports `langchain_text_splitters` at the top, so `sys.modules` checks within the same process would not reflect a clean import state)\n\nFixes #35437.\n\n> **AI disclaimer:** This PR was developed with assistance from Claude Code (Anthropic AI).",
+        "state": "open",
+        "author": "gitbalaji",
+        "created_at": "2026-02-28T01:24:30Z",
+        "comments": [
+            {
+                "comment_id": "3978858179",
+                "user": "gitbalaji",
+                "body": "Hey @ccurme @mdrxy \u2014 would appreciate a review when you get a chance. This restores lazy imports for heavy optional dependencies (spacy, nltk, etc.) in `text-splitters` that were accidentally made eager, increasing import time for users who don't use those splitters.",
+                "created_at": "2026-03-01T02:08:17Z"
+            }
+        ]
+    }
+]

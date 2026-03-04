@@ -1,0 +1,82 @@
+import os
+import requests
+import json
+from dotenv import load_dotenv
+
+# 1. Load our secret API keys from the .env file
+load_dotenv()
+GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
+
+# 2. Define our target Corpus (Dataset)
+REPO_OWNER = "langchain-ai"
+REPO_NAME = "langchain"
+ISSUES_TO_FETCH = 30  # We start small for testing and fast iteration
+
+def fetch_issues(owner, repo, limit=10):
+    """Fetches issues and their comments from a public GitHub repository."""
+    
+    url = f"https://api.github.com/repos/{owner}/{repo}/issues"
+    
+    # We pass our token so GitHub doesn't block us for rate limits
+    headers = {
+        "Accept": "application/vnd.github.v3+json",
+        "Authorization": f"token {GITHUB_TOKEN}"
+    }
+    params = {
+        "state": "all",  # Get both open and closed issues
+        "per_page": limit
+    }
+    
+    print(f"Fetching {limit} issues from {owner}/{repo}...")
+    response = requests.get(url, headers=headers, params=params)
+    
+    if response.status_code != 200:
+        print(f"Error fetching issues: {response.text}")
+        return []
+        
+    issues = response.json()
+    corpus =[]
+    
+    for issue in issues:
+        issue_number = issue['number']
+        print(f"Fetching comments for issue #{issue_number}...")
+        
+        # 3. Fetch the unstructured chat (comments) for this specific issue
+        comments_url = issue['comments_url']
+        comments_response = requests.get(comments_url, headers=headers)
+        comments_data = comments_response.json() if comments_response.status_code == 200 else []
+        
+        # Clean up the comments into a structured list
+        comments_formatted =[]
+        for c in comments_data:
+            comments_formatted.append({
+                "comment_id": str(c['id']),
+                "user": c['user']['login'],
+                "body": c['body'],
+                "created_at": c['created_at']
+            })
+            
+        # 4. Construct our "Artifact" (The grounded document)
+        artifact = {
+            "source_id": f"github_issue_{issue_number}",
+            "url": issue['html_url'],
+            "title": issue['title'],
+            "body": issue['body'],
+            "state": issue['state'],
+            "author": issue['user']['login'],
+            "created_at": issue['created_at'],
+            "comments": comments_formatted
+        }
+        
+        corpus.append(artifact)
+        
+    return corpus
+
+if __name__ == "__main__":
+    # Execute the function and save the data to a local file
+    data = fetch_issues(REPO_OWNER, REPO_NAME, limit=ISSUES_TO_FETCH)
+    
+    with open("corpus.json", "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=4)
+        
+    print(f"\n Success! Saved {len(data)} issues to corpus.json!")

@@ -1,0 +1,1260 @@
+{
+    "entities": [
+        {
+            "id": "langchain_text_splitters",
+            "type": "COMPONENT",
+            "name": "langchain_text_splitters",
+            "aliases": [
+                "langchain_text_splitters"
+            ]
+        },
+        {
+            "id": "nltk",
+            "type": "COMPONENT",
+            "name": "nltk",
+            "aliases": [
+                "nltk"
+            ]
+        },
+        {
+            "id": "spacy",
+            "type": "COMPONENT",
+            "name": "spacy",
+            "aliases": [
+                "spacy"
+            ]
+        },
+        {
+            "id": "sentence-transformers",
+            "type": "COMPONENT",
+            "name": "sentence-transformers",
+            "aliases": [
+                "sentence-transformers"
+            ]
+        },
+        {
+            "id": "recursivecharactertextsplitter",
+            "type": "COMPONENT",
+            "name": "RecursiveCharacterTextSplitter",
+            "aliases": [
+                "RecursiveCharacterTextSplitter"
+            ]
+        },
+        {
+            "id": "plc0415",
+            "type": "CONCEPT",
+            "name": "PLC0415",
+            "aliases": [
+                "PLC0415"
+            ]
+        },
+        {
+            "id": "fix(text-splitters)",
+            "type": "ISSUE",
+            "name": "fix(text-splitters)",
+            "aliases": [
+                "fix(text-splitters)"
+            ]
+        },
+        {
+            "id": "universeplayer",
+            "type": "USER",
+            "name": "universeplayer",
+            "aliases": [
+                "universeplayer"
+            ]
+        },
+        {
+            "id": "fix(openai)",
+            "type": "ISSUE",
+            "name": "fix(openai)",
+            "aliases": [
+                "fix(openai)"
+            ]
+        },
+        {
+            "id": "mdrxy",
+            "type": "USER",
+            "name": "mdrxy",
+            "aliases": [
+                "mdrxy"
+            ]
+        },
+        {
+            "id": "codspeed-hq[bot]",
+            "type": "USER",
+            "name": "codspeed-hq[bot]",
+            "aliases": [
+                "codspeed-hq[bot]"
+            ]
+        },
+        {
+            "id": "chatopenai",
+            "type": "COMPONENT",
+            "name": "ChatOpenAI",
+            "aliases": [
+                "ChatOpenAI"
+            ]
+        },
+        {
+            "id": "issue with chatopenai",
+            "type": "ISSUE",
+            "name": "issue with ChatOpenAI",
+            "aliases": [
+                "issue with ChatOpenAI"
+            ]
+        },
+        {
+            "id": "performance report",
+            "type": "CONCEPT",
+            "name": "performance report",
+            "aliases": [
+                "performance report"
+            ]
+        },
+        {
+            "id": "giulio-leone",
+            "type": "USER",
+            "name": "giulio-leone",
+            "aliases": [
+                "giulio-leone",
+                "Giulio Leone"
+            ]
+        },
+        {
+            "id": "fix(core): make trim_messages respect tool-call group integrity",
+            "type": "ISSUE",
+            "name": "fix(core): make trim_messages respect tool-call group integrity",
+            "aliases": [
+                "fix(core): make trim_messages respect tool-call group integrity"
+            ]
+        },
+        {
+            "id": "lonnie08",
+            "type": "USER",
+            "name": "lonnie08",
+            "aliases": [
+                "lonnie08"
+            ]
+        },
+        {
+            "id": "issue-35442",
+            "type": "ISSUE",
+            "name": "issue-35442",
+            "aliases": [
+                "issue-35442"
+            ]
+        },
+        {
+            "id": "test(chatglm)",
+            "type": "ISSUE",
+            "name": "test(chatglm): add tests for invalid API and timeout scenarios",
+            "aliases": [
+                "test(chatglm): add tests for invalid API and timeout scenarios",
+                "test(chatglm)"
+            ]
+        },
+        {
+            "id": "chatglm chat model",
+            "type": "CONCEPT",
+            "name": "ChatGLM chat model",
+            "aliases": [
+                "ChatGLM chat model"
+            ]
+        },
+        {
+            "id": "user",
+            "type": "USER",
+            "name": "user",
+            "aliases": [
+                "user"
+            ]
+        },
+        {
+            "id": "issue-35492",
+            "type": "ISSUE",
+            "name": "issue-35492",
+            "aliases": [
+                "issue-35492"
+            ]
+        },
+        {
+            "id": "langchain_core",
+            "type": "COMPONENT",
+            "name": "LangChain Core",
+            "aliases": [
+                "LangChain Core",
+                "langchain_core"
+            ]
+        },
+        {
+            "id": "user123",
+            "type": "USER",
+            "name": "User 123",
+            "aliases": [
+                "User 123",
+                "user123"
+            ]
+        },
+        {
+            "id": "senguttuvan",
+            "type": "USER",
+            "name": "Navin Senguttuvan",
+            "aliases": [
+                "senguttuvan",
+                "Navin Senguttuvan"
+            ]
+        },
+        {
+            "id": "28848",
+            "type": "ISSUE",
+            "name": "Issue #28848",
+            "aliases": [
+                "Issue #28848",
+                "28848"
+            ]
+        },
+        {
+            "id": "llmtoolselectormiddleware",
+            "type": "COMPONENT",
+            "name": "LLMToolSelectorMiddleware",
+            "aliases": [
+                "llmtoolselectormiddleware",
+                "LLMToolSelectorMiddleware"
+            ]
+        },
+        {
+            "id": "fix(langchain)",
+            "type": "ISSUE",
+            "name": "fix(langchain)",
+            "aliases": [
+                "fix(langchain)"
+            ]
+        },
+        {
+            "id": "claude",
+            "type": "CONCEPT",
+            "name": "Claude",
+            "aliases": [
+                "Claude",
+                "claude"
+            ]
+        },
+        {
+            "id": "issue-123",
+            "type": "ISSUE",
+            "name": "issue-123",
+            "aliases": [
+                "Fix(openai): fix if/elif chain and unhandled tool name in _consolidate_calls",
+                "fix(openai): ensure stream=False in payload when disable_streaming is active",
+                "issue-123"
+            ]
+        },
+        {
+            "id": "priyankakukreja267",
+            "type": "USER",
+            "name": "priyankakukreja267",
+            "aliases": [
+                "priyankakukreja267"
+            ]
+        },
+        {
+            "id": "benchmark tooling",
+            "type": "CONCEPT",
+            "name": "benchmark tooling",
+            "aliases": [
+                "benchmark tooling"
+            ]
+        },
+        {
+            "id": "ademicho123",
+            "type": "USER",
+            "name": "ademicho123",
+            "aliases": [
+                "ademicho123"
+            ]
+        },
+        {
+            "id": "issue-28848",
+            "type": "ISSUE",
+            "name": "issue-28848",
+            "aliases": [
+                "issue-28848"
+            ]
+        },
+        {
+            "id": "ademicho123:fix/structured-output-bind-tools-28848",
+            "type": "ISSUE",
+            "name": "ademicho123:fix/structured-output-bind-tools-28848",
+            "aliases": [
+                "ademicho123:fix/structured-output-bind-tools-28848"
+            ]
+        },
+        {
+            "id": "fix: preserve tool_use/tool_result pairs in trim_messages",
+            "type": "ISSUE",
+            "name": "fix: preserve tool_use/tool_result pairs in trim_messages",
+            "aliases": [
+                "fix: preserve tool_use/tool_result pairs in trim_messages"
+            ]
+        },
+        {
+            "id": "issue-35436",
+            "type": "ISSUE",
+            "name": "disable_streaming='tool_calling' causes crash",
+            "aliases": [
+                "issue-35436",
+                "disable_streaming='tool_calling' causes crash"
+            ]
+        },
+        {
+            "id": "fix(core): fix runnableretry.batch position corruption with return_exceptions",
+            "type": "ISSUE",
+            "name": "fix(core): fix RunnableRetry.batch position corruption with return_exceptions",
+            "aliases": [
+                "fix(core): fix RunnableRetry.batch position corruption with return_exceptions"
+            ]
+        },
+        {
+            "id": "35475",
+            "type": "ISSUE",
+            "name": "35475",
+            "aliases": [
+                "35475"
+            ]
+        },
+        {
+            "id": "fix(huggingface)",
+            "type": "USER",
+            "name": "fix(huggingface)",
+            "aliases": [
+                "fix(huggingface)"
+            ]
+        },
+        {
+            "id": "pydantic models",
+            "type": "CONCEPT",
+            "name": "Pydantic models",
+            "aliases": [
+                "Pydantic models"
+            ]
+        },
+        {
+            "id": "with_structured_output",
+            "type": "CONCEPT",
+            "name": "with_structured_output",
+            "aliases": [
+                "with_structured_output"
+            ]
+        },
+        {
+            "id": "issue #32197",
+            "type": "ISSUE",
+            "name": "issue #32197",
+            "aliases": [
+                "issue #32197"
+            ]
+        },
+        {
+            "id": "langchain-huggingface",
+            "type": "COMPONENT",
+            "name": "langchain-huggingface",
+            "aliases": [
+                "langchain-huggingface"
+            ]
+        },
+        {
+            "id": "shivangisharma4",
+            "type": "USER",
+            "name": "Shivangisharma4",
+            "aliases": [
+                "Shivangisharma4"
+            ]
+        },
+        {
+            "id": "michaelkarpe",
+            "type": "USER",
+            "name": "MichaelKarpe",
+            "aliases": [
+                "MichaelKarpe"
+            ]
+        },
+        {
+            "id": "#35182",
+            "type": "ISSUE",
+            "name": "PR #35182",
+            "aliases": [
+                "#35182",
+                "PR #35182"
+            ]
+        },
+        {
+            "id": "umut-polat",
+            "type": "USER",
+            "name": "Umut Polat",
+            "aliases": [
+                "Umut Polat",
+                "umut-polat"
+            ]
+        },
+        {
+            "id": "langchain-ai/langchain",
+            "type": "COMPONENT",
+            "name": "Langchain AI",
+            "aliases": [
+                "Langchain AI",
+                "langchain-ai/langchain"
+            ]
+        },
+        {
+            "id": "35259",
+            "type": "ISSUE",
+            "name": "fix(core): guard merge_lists against non-dict elements when matching by index",
+            "aliases": [
+                "fix(core): guard merge_lists against non-dict elements when matching by index",
+                "35259"
+            ]
+        },
+        {
+            "id": "issue-35486",
+            "type": "ISSUE",
+            "name": "issue-35486",
+            "aliases": [
+                "issue-35486"
+            ]
+        },
+        {
+            "id": "gautamvarmadatla",
+            "type": "USER",
+            "name": "gautamvarmadatla",
+            "aliases": [
+                "gautamvarmadatla"
+            ]
+        },
+        {
+            "id": "abatch_as_completed",
+            "type": "CONCEPT",
+            "name": "abatch_as_completed",
+            "aliases": [
+                "abatch_as_completed"
+            ]
+        },
+        {
+            "id": "pending tasks",
+            "type": "CONCEPT",
+            "name": "pending tasks",
+            "aliases": [
+                "pending tasks"
+            ]
+        },
+        {
+            "id": "fix(core): prevent runnableretry.batch from returning corrupted outputs on partial failure",
+            "type": "ISSUE",
+            "name": "fix(core): prevent RunnableRetry.batch from returning corrupted outputs on partial failure",
+            "aliases": [
+                "fix(core): prevent RunnableRetry.batch from returning corrupted outputs on partial failure"
+            ]
+        },
+        {
+            "id": "refresh-model-profiles",
+            "type": "ISSUE",
+            "name": "chore(model-profiles): refresh model profile data",
+            "aliases": [
+                "refresh-model-profiles",
+                "chore(model-profiles): refresh model profile data"
+            ]
+        },
+        {
+            "id": "fix(core): runnableretry.batch corrupted outputs on partial retry success",
+            "type": "ISSUE",
+            "name": "fix(core): RunnableRetry.batch corrupted outputs on partial retry success",
+            "aliases": [
+                "fix(core): RunnableRetry.batch corrupted outputs on partial retry success"
+            ]
+        },
+        {
+            "id": "yangbaechu",
+            "type": "USER",
+            "name": "yangbaechu",
+            "aliases": [
+                "yangbaechu"
+            ]
+        },
+        {
+            "id": "runnableretry.batch/abatch",
+            "type": "CONCEPT",
+            "name": "RunnableRetry.batch/abatch",
+            "aliases": [
+                "RunnableRetry.batch/abatch"
+            ]
+        },
+        {
+            "id": "jk",
+            "type": "USER",
+            "name": "jk",
+            "aliases": [
+                "jk"
+            ]
+        },
+        {
+            "id": "perf(core)",
+            "type": "ISSUE",
+            "name": "perf(core): optimize callback manager hot paths",
+            "aliases": [
+                "perf(core)",
+                "perf(core): optimize callback manager hot paths"
+            ]
+        },
+        {
+            "id": "perf(core): use deque for pipeline batch output reassembly in runnablesequence",
+            "type": "ISSUE",
+            "name": "perf(core): use deque for pipeline batch output reassembly in RunnableSequence",
+            "aliases": [
+                "perf(core): use deque for pipeline batch output reassembly in RunnableSequence"
+            ]
+        },
+        {
+            "id": "perf(core): use deque for result reassembly in runnableretry batch",
+            "type": "ISSUE",
+            "name": "perf(core): use deque for result reassembly in RunnableRetry batch",
+            "aliases": [
+                "perf(core): use deque for result reassembly in RunnableRetry batch"
+            ]
+        },
+        {
+            "id": "copilot",
+            "type": "USER",
+            "name": "Copilot",
+            "aliases": [
+                "Copilot",
+                "copilot"
+            ]
+        },
+        {
+            "id": "perf(text-splitters)",
+            "type": "ISSUE",
+            "name": "perf(text-splitters)",
+            "aliases": [
+                "perf(text-splitters)"
+            ]
+        },
+        {
+            "id": "langchain",
+            "type": "COMPONENT",
+            "name": "langchain",
+            "aliases": [
+                "langchain"
+            ]
+        },
+        {
+            "id": "#35011",
+            "type": "ISSUE",
+            "name": "issue #35011",
+            "aliases": [
+                "issue #35011",
+                "#35011"
+            ]
+        },
+        {
+            "id": "agentmiddleware",
+            "type": "COMPONENT",
+            "name": "AgentMiddleware",
+            "aliases": [
+                "AgentMiddleware"
+            ]
+        },
+        {
+            "id": "piimiddleware",
+            "type": "COMPONENT",
+            "name": "PIIMiddleware",
+            "aliases": [
+                "PIIMiddleware"
+            ]
+        },
+        {
+            "id": "gitbalaji",
+            "type": "USER",
+            "name": "gitbalaji",
+            "aliases": [
+                "gitbalaji"
+            ]
+        },
+        {
+            "id": "ccurme",
+            "type": "USER",
+            "name": "ccurme",
+            "aliases": [
+                "ccurme"
+            ]
+        },
+        {
+            "id": "text-splitters",
+            "type": "COMPONENT",
+            "name": "text-splitters",
+            "aliases": [
+                "text-splitters"
+            ]
+        },
+        {
+            "id": "pr #32325",
+            "type": "ISSUE",
+            "name": "PR #32325",
+            "aliases": [
+                "PR #32325"
+            ]
+        },
+        {
+            "id": "konlpy",
+            "type": "CONCEPT",
+            "name": "konlpy",
+            "aliases": [
+                "konlpy"
+            ]
+        }
+    ],
+    "claims": [
+        {
+            "subject_id": "fix(text-splitters)",
+            "relation": "REPORTED",
+            "object_id": "memory bloat",
+            "evidence": [
+                {
+                    "source_id": "GitHub issue",
+                    "excerpt": "Importing `langchain_text_splitters` eagerly pulls in `nltk`, `spacy`, and `sentence-transformers` (plus `torch` transitively) at module level, adding ~700 MiB RSS even when only lightweight splitters like `RecursiveCharacterTextSplitter` are used.",
+                    "url": "https://github.com/langchain/langchain/issues/35437",
+                    "timestamp": "2026-03-01T20:19:41Z"
+                }
+            ]
+        },
+        {
+            "subject_id": "plc0415",
+            "relation": "CHANGED_STATE",
+            "object_id": "import structure",
+            "evidence": [
+                {
+                    "source_id": "GitHub issue",
+                    "excerpt": "This regression was introduced in 1.0.0 when [PLC0415](https://docs.astral.sh/ruff/rules/import-outside-top-level/) moved lazy imports to top-level (PR #32325).",
+                    "url": "https://github.com/langchain/langchain/issues/35437",
+                    "timestamp": "2026-03-01T20:19:41Z"
+                }
+            ]
+        },
+        {
+            "subject_id": "fix(text-splitters)",
+            "relation": "PROPOSED_FIX",
+            "object_id": "lazy-import nltk/spacy/sentence-transformers",
+            "evidence": [
+                {
+                    "source_id": "GitHub issue",
+                    "excerpt": "Move the three heavy-dep splitter imports (`NLTKTextSplitter`, `SpacyTextSplitter`, `SentenceTransformersTokenTextSplitter`) behind a `__getattr__` lazy loader, following the exact same pattern used throughout `langchain-core` (e.g., `langchain_core.embeddings`, `langchain_core.callbacks`).",
+                    "url": "https://github.com/langchain/langchain/issues/35437",
+                    "timestamp": "2026-03-01T20:19:41Z"
+                }
+            ]
+        },
+        {
+            "subject_id": "universeplayer",
+            "relation": "PROPOSED_FIX",
+            "object_id": "fix(openai)",
+            "evidence": [
+                {
+                    "source_id": "https://github.com/langchain-ai/langchain/issues/32252",
+                    "excerpt": "Fixes #32252",
+                    "url": "https://github.com/langchain-ai/langchain/issues/32252",
+                    "timestamp": "2026-03-01T20:07:36Z"
+                }
+            ]
+        },
+        {
+            "subject_id": "mdrxy",
+            "relation": "REPORTED",
+            "object_id": "issue with chatopenai",
+            "evidence": [
+                {
+                    "source_id": "https://github.com/langchain-ai/langchain/issues/34328",
+                    "excerpt": "Putting this complexity into ChatOpenAI to handle a non-OpenAI provider is not warranted.",
+                    "url": "https://github.com/langchain-ai/langchain/issues/34328",
+                    "timestamp": "2026-03-01T20:09:52Z"
+                }
+            ]
+        },
+        {
+            "subject_id": "codspeed-hq[bot]",
+            "relation": "REPORTED",
+            "object_id": "performance report",
+            "evidence": [
+                {
+                    "source_id": "https://codspeed.io/langchain-ai/langchain/branches/universeplayer%3Afix%2Fvllm-null-choices",
+                    "excerpt": "Merging this PR will **not alter performance**",
+                    "url": "https://codspeed.io/langchain-ai/langchain/branches/universeplayer%3Afix%2Fvllm-null-choices",
+                    "timestamp": "2026-03-01T20:14:44Z"
+                },
+                {
+                    "source_id": "comment-123",
+                    "excerpt": "Merging this PR will **not alter performance**",
+                    "url": "https://github.com/langchain-ai/langchain/issues/35436#comment-123",
+                    "timestamp": "2026-02-28T09:55:41Z"
+                }
+            ]
+        },
+        {
+            "subject_id": "giulio-leone",
+            "relation": "PROPOSED_FIX",
+            "object_id": "fix(core): make trim_messages respect tool-call group integrity",
+            "evidence": [
+                {
+                    "source_id": "github_issue_comment",
+                    "excerpt": "Added in 4da7f56: new test `test_trim_messages_tool_group_never_split_first_allow_partial` covering `strategy=\"first\"` + `allow_partial=True` with a tool-call group that partially fits the budget.",
+                    "url": "https://github.com/issue/comment",
+                    "timestamp": "2026-03-01T18:23:22Z"
+                }
+            ]
+        },
+        {
+            "subject_id": "lonnie08",
+            "relation": "PROPOSED_FIX",
+            "object_id": "issue-35442",
+            "evidence": [
+                {
+                    "source_id": "issue-35442",
+                    "excerpt": "Fixes #35442",
+                    "url": "https://github.com/langchain-ai/langchain/issues/35442",
+                    "timestamp": "2026-03-01T14:28:07Z"
+                }
+            ]
+        },
+        {
+            "subject_id": "codspeed-hq[bot]",
+            "relation": "REPORTED",
+            "object_id": "issue-35442",
+            "evidence": [
+                {
+                    "source_id": "issue-35442",
+                    "excerpt": "Merging this PR will **not alter performance**",
+                    "url": "https://github.com/langchain-ai/langchain/issues/35442",
+                    "timestamp": "2026-03-01T14:30:14Z"
+                }
+            ]
+        },
+        {
+            "subject_id": "codspeed-hq[bot]",
+            "relation": "REPORTED",
+            "object_id": "pr #xxx",
+            "evidence": [
+                {
+                    "source_id": "codspeed-hq[bot]",
+                    "excerpt": "Merging this PR will **not alter performance**",
+                    "url": "https://github.com/langchain-ai/langchain/pull/XXX",
+                    "timestamp": "2026-03-01T14:13:16Z"
+                }
+            ]
+        },
+        {
+            "subject_id": "test(chatglm)",
+            "relation": "PROPOSED_FIX",
+            "object_id": "chatglm chat model",
+            "evidence": [
+                {
+                    "source_id": "test(chatglm)",
+                    "excerpt": "Add tests to verify ChatGLM chat model's error handling for invalid API addresses and timeouts",
+                    "url": "https://github.com/langchain-ai/langchain/pull/XXX",
+                    "timestamp": "2026-03-01T14:06:52Z"
+                }
+            ]
+        },
+        {
+            "subject_id": "user",
+            "relation": "PROPOSED_FIX",
+            "object_id": "issue-35492",
+            "evidence": [
+                {
+                    "source_id": "issue-35492",
+                    "excerpt": "Fixes #35492",
+                    "url": "https://github.com/user-attachments/issues/35492",
+                    "timestamp": "2026-03-01T09:29:37Z"
+                }
+            ]
+        },
+        {
+            "subject_id": "user123",
+            "relation": "REPORTED",
+            "object_id": "langchain_core",
+            "evidence": [
+                {
+                    "source_id": "github_issue",
+                    "excerpt": "The `Graph.extend()` method creates hierarchical node IDs by joining names with colons (e.g., `parent:child:grandchild`).",
+                    "url": "https://github.com/langchain/langchain/issues/1234",
+                    "timestamp": "2026-03-01T09:19:41Z"
+                }
+            ]
+        },
+        {
+            "subject_id": "senguttuvan",
+            "relation": "PROPOSED_FIX",
+            "object_id": "28848",
+            "evidence": [
+                {
+                    "source_id": "issue-123",
+                    "excerpt": "Fixes #28848",
+                    "url": "https://github.com/langchain-ai/langchain/issues/123",
+                    "timestamp": "2026-03-01T06:24:55Z"
+                }
+            ]
+        },
+        {
+            "subject_id": "llmtoolselectormiddleware",
+            "relation": "CHANGED_STATE",
+            "object_id": "fix(langchain)",
+            "evidence": [
+                {
+                    "source_id": "issue-123",
+                    "excerpt": "handle missing 'tools' key in LLMToolSelectorMiddleware response",
+                    "url": "https://github.com/org/repo/issues/123",
+                    "timestamp": "2026-03-01T02:37:32Z"
+                }
+            ]
+        },
+        {
+            "subject_id": "claude",
+            "relation": "PROPOSED_FIX",
+            "object_id": "fix(langchain)",
+            "evidence": [
+                {
+                    "source_id": "issue-123",
+                    "excerpt": "This PR was developed with the assistance of an AI agent (Claude).",
+                    "url": "https://github.com/org/repo/issues/123",
+                    "timestamp": "2026-03-01T02:37:32Z"
+                }
+            ]
+        },
+        {
+            "subject_id": "priyankakukreja267",
+            "relation": "REPORTED",
+            "object_id": "benchmark tooling",
+            "evidence": [
+                {
+                    "source_id": "comment",
+                    "excerpt": "benchmark tooling is flaky - re-triggering the tests",
+                    "url": "https://github.com/",
+                    "timestamp": "2026-03-01T02:32:59Z"
+                }
+            ]
+        },
+        {
+            "subject_id": "ademicho123",
+            "relation": "PROPOSED_FIX",
+            "object_id": "issue-28848",
+            "evidence": [
+                {
+                    "source_id": "issue-28848",
+                    "excerpt": "Fixes #28848",
+                    "url": "https://github.com/langchain-ai/langchain/issues/28848",
+                    "timestamp": "2026-02-28T22:51:16Z"
+                }
+            ]
+        },
+        {
+            "subject_id": "codspeed-hq[bot]",
+            "relation": "REPORTED",
+            "object_id": "ademicho123:fix/structured-output-bind-tools-28848",
+            "evidence": [
+                {
+                    "source_id": "comment-123",
+                    "excerpt": "Merging this PR will **not alter performance**",
+                    "url": "https://github.com/langchain-ai/langchain/pull/123",
+                    "timestamp": "2026-02-28T23:03:48Z"
+                }
+            ]
+        },
+        {
+            "subject_id": "giulio-leone",
+            "relation": "PROPOSED_FIX",
+            "object_id": "fix: preserve tool_use/tool_result pairs in trim_messages",
+            "evidence": [
+                {
+                    "source_id": "github_comment",
+                    "excerpt": "All actual tests, lint, and type checks pass (85/87). The only failing checks are CodSpeed Benchmarks (requires main branch baseline) and the derived \"CI Success\" meta-check.",
+                    "url": "https://github.com/issue/comment",
+                    "timestamp": "2026-03-01T03:59:45Z"
+                }
+            ]
+        },
+        {
+            "subject_id": "fix: preserve tool_use/tool_result pairs in trim_messages",
+            "relation": "CHANGED_STATE",
+            "object_id": "open",
+            "evidence": [
+                {
+                    "source_id": "github_issue",
+                    "excerpt": "State: open",
+                    "url": "https://github.com/issue",
+                    "timestamp": "2026-02-28T16:56:41Z"
+                }
+            ]
+        },
+        {
+            "subject_id": "giulio-leone",
+            "relation": "REPORTED",
+            "object_id": "issue-35436",
+            "evidence": [
+                {
+                    "source_id": "issue-123",
+                    "excerpt": "Fixes #35436",
+                    "url": "https://github.com/langchain-ai/langchain/issues/123",
+                    "timestamp": "2026-02-28T16:28:01Z"
+                }
+            ]
+        },
+        {
+            "subject_id": "giulio-leone",
+            "relation": "PROPOSED_FIX",
+            "object_id": "fix(core): fix runnableretry.batch position corruption with return_exceptions",
+            "evidence": [
+                {
+                    "source_id": "github_comment",
+                    "excerpt": "All actual tests, lint, and type checks pass (85/87). The only failing checks are CodSpeed Benchmarks (requires main branch baseline) and the derived \"CI Success\" meta-check.",
+                    "url": "https://github.com/issue/comment",
+                    "timestamp": "2026-03-01T03:59:46Z"
+                }
+            ]
+        },
+        {
+            "subject_id": "fix(core): fix runnableretry.batch position corruption with return_exceptions",
+            "relation": "REPORTED",
+            "object_id": "35475",
+            "evidence": [
+                {
+                    "source_id": "github_issue",
+                    "excerpt": "Fixes #35475",
+                    "url": "https://github.com/issue",
+                    "timestamp": "2026-02-28T16:23:04Z"
+                }
+            ]
+        },
+        {
+            "subject_id": "fix(huggingface)",
+            "relation": "PROPOSED_FIX",
+            "object_id": "pydantic models in with_structured_output",
+            "evidence": [
+                {
+                    "source_id": "GitHub issue",
+                    "excerpt": "use PydanticOutputParser for Pydantic models in with_structured_output",
+                    "url": "https://github.com",
+                    "timestamp": "2026-02-28T14:44:53Z"
+                }
+            ]
+        },
+        {
+            "subject_id": "fix(huggingface)",
+            "relation": "CHANGED_STATE",
+            "object_id": "issue #32197",
+            "evidence": [
+                {
+                    "source_id": "GitHub issue",
+                    "excerpt": "Fixes #32197",
+                    "url": "https://github.com",
+                    "timestamp": "2026-02-28T14:44:53Z"
+                }
+            ]
+        },
+        {
+            "subject_id": "user",
+            "relation": "REPORTED",
+            "object_id": "langchain-huggingface",
+            "evidence": [
+                {
+                    "source_id": "issue_body",
+                    "excerpt": "Despite #35182, langchain-huggingface==1.2.1 has not been released to pypi and installing this version with pip does not work",
+                    "url": "https://github.com/langchain/langchain/issues/XXXXX",
+                    "timestamp": "2026-02-28T13:04:49Z"
+                }
+            ]
+        },
+        {
+            "subject_id": "umut-polat",
+            "relation": "REPORTED",
+            "object_id": "umut-polat:fix/consolidate-calls-elif",
+            "evidence": [
+                {
+                    "source_id": "issue-123",
+                    "excerpt": "the `file_search` branch uses a bare `if` instead of `elif`, breaking the mutually exclusive chain that starts with `web_search`",
+                    "url": "https://github.com/langchain-ai/langchain/issues/123",
+                    "timestamp": "2026-02-28T12:27:10Z"
+                }
+            ]
+        },
+        {
+            "subject_id": "giulio-leone",
+            "relation": "PROPOSED_FIX",
+            "object_id": "fix(core): guard merge_lists against non-dict elements when matching by index",
+            "evidence": [
+                {
+                    "source_id": "github_issue",
+                    "excerpt": "Add `isinstance(e_left, dict)` guard before accessing dict-specific attributes.",
+                    "url": "https://github.com/issues/35259",
+                    "timestamp": "2026-03-01T03:59:47Z"
+                }
+            ]
+        },
+        {
+            "subject_id": "giulio-leone",
+            "relation": "REPORTED",
+            "object_id": "typeerror: string indices must be integers, not 'str'",
+            "evidence": [
+                {
+                    "source_id": "github_issue",
+                    "excerpt": "`merge_lists` crashes with `TypeError: string indices must be integers, not 'str'` when the merged list contains a mix of strings and dicts with `index` keys.",
+                    "url": "https://github.com/issues/35259",
+                    "timestamp": "2026-02-28T09:54:49Z"
+                }
+            ]
+        },
+        {
+            "subject_id": "giulio-leone",
+            "relation": "PROPOSED_FIX",
+            "object_id": "fix(openai)",
+            "evidence": [
+                {
+                    "source_id": "issue-35436",
+                    "excerpt": "Pop `stream` from the payload at the start of both `_generate()` and `_agenerate()`",
+                    "url": "https://github.com/langchain-ai/langchain/issues/35436",
+                    "timestamp": "2026-02-28T09:49:07Z"
+                }
+            ]
+        },
+        {
+            "subject_id": "giulio-leone",
+            "relation": "CHANGED_STATE",
+            "object_id": "issue-35436",
+            "evidence": [
+                {
+                    "source_id": "comment-456",
+                    "excerpt": "Closing in favor of #35486",
+                    "url": "https://github.com/langchain-ai/langchain/issues/35436#comment-456",
+                    "timestamp": "2026-02-28T18:18:53Z"
+                }
+            ]
+        },
+        {
+            "subject_id": "gautamvarmadatla",
+            "relation": "REPORTED",
+            "object_id": "giulio-leone",
+            "evidence": [
+                {
+                    "source_id": "github_issue_comment",
+                    "excerpt": "Hi @giulio-leone, I already opened a PR for this fix last week, and your PR makes the exact same change.",
+                    "url": "https://github.com/issue/comment",
+                    "timestamp": "2026-02-28T14:03:04Z"
+                }
+            ]
+        },
+        {
+            "subject_id": "abatch_as_completed",
+            "relation": "CHANGED_STATE",
+            "object_id": "pending tasks",
+            "evidence": [
+                {
+                    "source_id": "github_issue_body",
+                    "excerpt": "`abatch_as_completed` does not cancel pending tasks when the consumer stops iterating (via exception or `break`)",
+                    "url": "https://github.com/issue",
+                    "timestamp": "2026-02-28T09:40:58Z"
+                }
+            ]
+        },
+        {
+            "subject_id": "giulio-leone",
+            "relation": "CHANGED_STATE",
+            "object_id": "fix(core): prevent runnableretry.batch from returning corrupted outputs on partial failure",
+            "evidence": [
+                {
+                    "source_id": "github issue comment",
+                    "excerpt": "Closing in favor of #35485 which has the correct fix.",
+                    "url": "https://github.com/issue/comment",
+                    "timestamp": "2026-02-28T18:18:53Z"
+                }
+            ]
+        },
+        {
+            "subject_id": "codspeed-hq[bot]",
+            "relation": "REPORTED",
+            "object_id": "refresh-model-profiles",
+            "evidence": [
+                {
+                    "source_id": "github_issue_comment",
+                    "excerpt": "Merging this PR will **not alter performance**",
+                    "url": "https://codspeed.io/langchain-ai/langchain/branches/bot%2Frefresh-model-profiles",
+                    "timestamp": "2026-02-28T08:08:54Z"
+                }
+            ]
+        },
+        {
+            "subject_id": "giulio-leone",
+            "relation": "CHANGED_STATE",
+            "object_id": "fix(core): runnableretry.batch corrupted outputs on partial retry success",
+            "evidence": [
+                {
+                    "source_id": "github_issue_comment",
+                    "excerpt": "Closing in favor of #35485 which has the correct fix.",
+                    "url": "https://github.com/issue/comment",
+                    "timestamp": "2026-02-28T18:18:53Z"
+                }
+            ]
+        },
+        {
+            "subject_id": "yangbaechu",
+            "relation": "PROPOSED_FIX",
+            "object_id": "runnableretry.batch/abatch",
+            "evidence": [
+                {
+                    "source_id": "comment",
+                    "excerpt": "I\u2019d like to work on this. My intended approach would be to add regression tests next to the existing retry batch tests `test_runnable.py`, then fix the final result assembly for this case.",
+                    "url": "https://github.com/hwchase17/langchain/issues/1234",
+                    "timestamp": "2026-02-28T06:36:39Z"
+                }
+            ]
+        },
+        {
+            "subject_id": "jk",
+            "relation": "PROPOSED_FIX",
+            "object_id": "perf(core)",
+            "evidence": [
+                {
+                    "source_id": "issue-1",
+                    "excerpt": "Optimizes the langchain_core callback manager hot paths identified by profiling langgraph's `react_agent` benchmark, where callback overhead accounts for ~35% of runtime.",
+                    "url": "https://github.com/langchain-ai/langchain/issues/1",
+                    "timestamp": "2026-02-28T05:39:08Z"
+                }
+            ]
+        },
+        {
+            "subject_id": "codspeed-hq[bot]",
+            "relation": "REPORTED",
+            "object_id": "perf(core)",
+            "evidence": [
+                {
+                    "source_id": "comment-1",
+                    "excerpt": "Merging this PR will **not alter performance**",
+                    "url": "https://github.com/langchain-ai/langchain/issues/1#comment-1",
+                    "timestamp": "2026-02-28T06:13:56Z"
+                }
+            ]
+        },
+        {
+            "subject_id": "giulio-leone",
+            "relation": "CHANGED_STATE",
+            "object_id": "perf(core): use deque for pipeline batch output reassembly in runnablesequence",
+            "evidence": [
+                {
+                    "source_id": "github_comment",
+                    "excerpt": "Closing \u2014 focusing on bug fixes with higher user impact.",
+                    "url": "github_comment_url",
+                    "timestamp": "2026-02-28T19:13:42Z"
+                }
+            ]
+        },
+        {
+            "subject_id": "giulio-leone",
+            "relation": "CHANGED_STATE",
+            "object_id": "perf(core): use deque for result reassembly in runnableretry batch",
+            "evidence": [
+                {
+                    "source_id": "github issue comment",
+                    "excerpt": "Closing \u2014 focusing on bug fixes with higher user impact.",
+                    "url": "github issue comment url",
+                    "timestamp": "2026-02-28T19:13:41Z"
+                }
+            ]
+        },
+        {
+            "subject_id": "copilot",
+            "relation": "PROPOSED_FIX",
+            "object_id": "perf(text-splitters)",
+            "evidence": [
+                {
+                    "source_id": "issue-123",
+                    "excerpt": "Convert `raw_lines` to a `collections.deque` at the start of `split_text()` and replace all `.pop(0)` calls with `.popleft()`, which is **O(1)** amortised.",
+                    "url": "https://github.com/org/repo/issues/123",
+                    "timestamp": "2026-02-28T04:27:56Z"
+                }
+            ]
+        },
+        {
+            "subject_id": "giulio-leone",
+            "relation": "CHANGED_STATE",
+            "object_id": "perf(text-splitters)",
+            "evidence": [
+                {
+                    "source_id": "comment-456",
+                    "excerpt": "Closing \u2014 focusing on bug fixes with higher user impact.",
+                    "url": "https://github.com/org/repo/issues/123#issuecomment-456",
+                    "timestamp": "2026-02-28T19:13:39Z"
+                }
+            ]
+        },
+        {
+            "subject_id": "langchain",
+            "relation": "REPORTED",
+            "object_id": "#35011",
+            "evidence": [
+                {
+                    "source_id": "issue_body",
+                    "excerpt": "This fixes the streaming bypass of middleware guardrails reported in #35011.",
+                    "url": "https://github.com/issue_body",
+                    "timestamp": "2026-02-28T04:15:11Z"
+                }
+            ]
+        },
+        {
+            "subject_id": "agentmiddleware",
+            "relation": "CHANGED_STATE",
+            "object_id": "guards_output attribute",
+            "evidence": [
+                {
+                    "source_id": "issue_body",
+                    "excerpt": "AgentMiddleware gets a new guards_output attribute (default False).",
+                    "url": "https://github.com/issue_body",
+                    "timestamp": "2026-02-28T04:15:11Z"
+                }
+            ]
+        },
+        {
+            "subject_id": "piimiddleware",
+            "relation": "CHANGED_STATE",
+            "object_id": "wrap_model_call, awrap_model_call, and _process_model_response",
+            "evidence": [
+                {
+                    "source_id": "issue_body",
+                    "excerpt": "PIIMiddleware sets it when apply_to_output=True.",
+                    "url": "https://github.com/issue_body",
+                    "timestamp": "2026-02-28T04:15:11Z"
+                }
+            ]
+        },
+        {
+            "subject_id": "gitbalaji",
+            "relation": "PROPOSED_FIX",
+            "object_id": "fix(text-splitters)",
+            "evidence": [
+                {
+                    "source_id": "comment",
+                    "excerpt": "Hey @ccurme @mdrxy \u2014 would appreciate a review when you get a chance. This restores lazy imports for heavy optional dependencies (spacy, nltk, etc.) in `text-splitters` that were accidentally made eager, increasing import time for users who don't use those splitters.",
+                    "url": "https://github.com/langchain/langchain/issues/35437",
+                    "timestamp": "2026-03-01T02:08:17Z"
+                }
+            ]
+        },
+        {
+            "subject_id": "pr #32325",
+            "relation": "CHANGED_STATE",
+            "object_id": "text-splitters",
+            "evidence": [
+                {
+                    "source_id": "issue_body",
+                    "excerpt": "PR #32325 moved these optional dependency imports to module-level `try/except` blocks (to satisfy ruff's `PLC0415` rule).",
+                    "url": "https://github.com/langchain/langchain/issues/35437",
+                    "timestamp": "2026-02-28T01:24:30Z"
+                }
+            ]
+        }
+    ]
+}
