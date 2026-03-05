@@ -1,19 +1,16 @@
 import os
 import json
 import time
+
 from dotenv import load_dotenv
 from pydantic import BaseModel, Field
 from typing import List
 from langchain_groq import ChatGroq
 from langchain_core.prompts import ChatPromptTemplate
 
-# 1. Setup
 load_dotenv()
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
-# =====================================================================
-# RUBRIC: ONTOLOGY / SCHEMA (Coherent and Extensible)
-# =====================================================================
 class Evidence(BaseModel):
     source_id: str = Field(description="The ID of the github issue or comment")
     excerpt: str = Field(description="Exact quote proving the claim")
@@ -36,9 +33,7 @@ class ExtractionResult(BaseModel):
     entities: List[Entity] = Field(description="All entities extracted")
     claims: List[Claim] = Field(description="All relational claims extracted")
 
-# =====================================================================
-# LLM & PROMPT SETUP
-# =====================================================================
+
 llm = ChatGroq(temperature=0, model_name="llama-3.3-70b-versatile", groq_api_key=GROQ_API_KEY)
 structured_llm = llm.with_structured_output(ExtractionResult)
 
@@ -55,35 +50,32 @@ prompt = ChatPromptTemplate.from_messages([
 
 extraction_chain = prompt | structured_llm
 
-# =====================================================================
-# RUBRIC: VALIDATION, REPAIR, AND QUALITY GATES
-# =====================================================================
+
 def run_extraction_with_retries(issue_text, max_retries=3):
     """RUBRIC: Validation & Repair - Handles invalid outputs via deterministic retries."""
     for attempt in range(max_retries):
         try:
             result = extraction_chain.invoke({"issue_data": issue_text})
             
-            # RUBRIC: Quality Gates - Filter out low confidence claims
+
             high_confidence_claims = [c for c in result.claims if c.confidence_score >= 0.8]
             
             if len(result.claims) != len(high_confidence_claims):
-                print(f"    Quality Gate: Dropped {len(result.claims) - len(high_confidence_claims)} low-confidence claims.")
+                print(f"Quality Gate: Dropped {len(result.claims) - len(high_confidence_claims)} low-confidence claims.")
                 
             return result.entities, high_confidence_claims
             
         except Exception as e:
-            print(f"   [Attempt {attempt+1} Failed] Validation Error: {e}. Retrying...")
+            print(f"[Attempt {attempt+1} Failed] Validation Error: {e}. Retrying...")
             time.sleep(2)
             
-    print("    Extraction failed after max retries. Emitting empty result to protect memory state.")
+    print("Extraction failed after max retries. Emitting empty result to protect memory state.")
     return [],[]
 
 def run_extraction():
     with open("corpus.json", "r", encoding="utf-8") as f:
         corpus = json.load(f)
     
-    # RUBRIC: Versioning - Tracking extraction versions for backfilling
     extraction_metadata = {
         "schema_version": "1.1.0",
         "model_version": "llama-3.3-70b-versatile",
@@ -95,13 +87,11 @@ def run_extraction():
     print("Starting Enterprise LLM Extraction Pipeline...")
     for issue in corpus: 
         print(f"Processing: {issue['title']}...")
-        
-        # Inject timestamp data so the LLM can fulfill the Grounding requirement
+     
         issue_text = f"Title: {issue['title']}\nState: {issue['state']}\nCreated At: {issue['created_at']}\nBody: {issue['body']}\n"
         for comment in issue['comments']:
             issue_text += f"\nComment by {comment['user']} at {comment['created_at']}: {comment['body']}"
-            
-        # Run our repairable, quality-gated extraction
+      
         entities, valid_claims = run_extraction_with_retries(issue_text)
         
         extracted_memory.append({
@@ -110,7 +100,7 @@ def run_extraction():
             "entities": [e.model_dump() for e in entities],
             "claims":[c.model_dump() for c in valid_claims]
         })
-        print(f"    Extracted {len(entities)} entities and {len(valid_claims)} valid claims.")
+        print(f"Extracted {len(entities)} entities and {len(valid_claims)} valid claims.")
 
     with open("extracted_memory.json", "w", encoding="utf-8") as f:
         json.dump(extracted_memory, f, indent=4)
