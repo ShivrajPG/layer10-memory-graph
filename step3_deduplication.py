@@ -52,27 +52,22 @@ def deduplicate_memory():
                 existing_evidence_urls = [e["url"] for e in global_claims[claim_key]["evidence"]]
                 
                 for ev in claim["evidence"]:
-                    # Prevent duplicate evidence links
                     if ev["url"] not in existing_evidence_urls:
                         global_claims[claim_key]["evidence"].append(ev)
 
-    # Convert our Python Sets back to Lists so we can save it as JSON
     for ent in global_entities.values():
         ent["aliases"] = list(ent["aliases"])
 
-    # Prepare final clean data
     final_graph = {
         "entities": list(global_entities.values()),
         "claims": list(global_claims.values())
     }
 
-    # Save to our new pristine JSON file
     with open("canonicalized_memory.json", "w", encoding="utf-8") as f:
         json.dump(final_graph, f, indent=4)
 
-    print(f"Success! Canonicalized down to {len(final_graph['entities'])} unique entities and {len(final_graph['claims'])} unique claims.")
+    print(f"Successfully Canonicalized down to {len(final_graph['entities'])} unique entities and {len(final_graph['claims'])} unique claims.")
 
 if __name__ == "__main__":
-    deduplicate_memory()
 
-    
+    deduplicate_memory()
