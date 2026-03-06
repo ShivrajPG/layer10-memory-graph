@@ -86,7 +86,7 @@ To adapt this MVP for Layer10’s target environment (Slack, Teams, Jira, Email)
 Open a terminal in the project directory and run:
 ```bash
 python -m venv venv
-source venv/bin/activate  # On Windows: .\venv\Scripts\Activate
+source venv/bin/activate 
 pip install -r requirements.txt
 ```
 
