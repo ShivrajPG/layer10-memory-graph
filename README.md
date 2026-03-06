@@ -83,14 +83,13 @@ To test the capabilities of the Agentic UI and the underlying Neo4j graph, you c
 3. **Component Deep-Dive:** `"Were there any fixes proposed for openai or gpt-5.4 models?"`
 4. **Temporal State Tracking:** `"Were there any state changes regarding inf-0000 or ci(infra)?"`
 5. **Anti-Hallucination Gate:** `"What did Sam Altman say about the LangChain classic package?"` 
-<img width="1879" height="911" alt="Screenshot 2026-03-07 024214" src="https://github.com/user-attachments/assets/8367afd4-a341-4e40-8b99-ae4b7a49f4eb" />
-<img width="1887"<img width="1864" height="899" alt="Screenshot 2026-03-07 024414" src="https://github.com/user-attachments/assets/91593a19-0553-46ee-89a9-7702cb10cccd" />
-<img width="1864" height="899" alt="Screenshot 2026-03-07 024414" src="https://github.com/user-attachments/assets/8a590458-af3f-4edf-937c-e52e<img width="1894" height="901" alt="Screenshot 2026-03-07 024444" src="https://github.com/user-attachments/assets/9691e6bf-bf9e-478f-b749-a34744fa8c43" />
-f2<img width="1883" height="903" alt="Screenshot 2026-03-07 024506" src="https://github.com/user-attachments/assets/3dcf5135-fa8d-4497-b484-fec4764a3b10" />
-a6cd98" />
-<img width="1895" height="905" alt="Screenshot 2026-03-07 024526" src="https://github.com/user-attachments/assets/a105541b-6c92-4d71-a81e-5250b846f7e9" />
-<img width="1900" height="908" alt="Screenshot 2026-03-07 024559" src="https://github.com/user-attachments/assets/20c29157-7246-4fb9-89df-fd02b635090c" />
+<img width="1895" height="905" alt="Screenshot 2026-03-07 024526" src="https://github.com/user-attachments/assets/ff3e522e-4837-4fc7-afa7-76d264704cd4" />
+<img width="1883" height="903" alt="Screenshot 2026-03-07 024506" src="https://github.com/user-attachments/assets/01e9a0f5-0e15-4be4-8d52-6407e97f626c" />
+<img width="1894" height="901" alt="Screenshot 2026-03-07 024444" src="https://github.com/user-attachments/assets/4df2b61d-5d73-47d6-b5f5-bcca67f02808" />
+<img width="1864" height="899" alt="Screenshot 2026-03-07 024414" src="https://github.com/user-attachments/assets/52095b16-bfc1-4f32-b37b-dc8dd53b1c0b" />
+<img width="1887" height="896" alt="Screenshot 2026-03-07 024256" src="https://github.com/user-attachments/assets/20eea756-825e-46f4-97f6-06bb200f835a" />
 
+<img width="1900" height="908" alt="Screenshot 2026-03-07 024559" src="https://github.com/user-attachments/assets/ebcd13e5-2141-4726-b093-1a640787a902" />
 
 ---
 
