@@ -6,8 +6,8 @@ from neo4j import GraphDatabase
 
 load_dotenv()
 URI = os.getenv("NEO4J_URI")
-USERNAME = os.getenv("NEO4J_USERNAME")
-PASSWORD = os.getenv("NEO4J_PASSWORD")
+Username = os.getenv("NEO4J_USERNAME")
+Password = os.getenv("NEO4J_PASSWORD")
 
 class MemoryGraphDB:
     def __init__(self, uri, user, password):
@@ -58,7 +58,8 @@ class MemoryGraphDB:
         tx.run(query, sub_id=claim["subject_id"], obj_id=claim["object_id"], evidence=evidence_str)
 
 if __name__ == "__main__":
-    db = MemoryGraphDB(URI, USERNAME, PASSWORD)
+
+    db = MemoryGraphDB(URI, Username, Password)
     
     try:
         db.ingest_data("canonicalized_memory.json")
