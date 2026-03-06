@@ -1,176 +1,34 @@
 [
     {
-        "source_issue": "github_issue_35499",
+        "source_issue": "github_issue_35601",
         "extraction_metadata": {
             "schema_version": "1.1.0",
             "model_version": "llama-3.3-70b-versatile",
-            "timestamp": 1772401551.0551724
+            "timestamp": 1772829108.9001904
         },
         "entities": [
             {
-                "id": "langchain_text_splitters",
-                "type": "COMPONENT",
-                "name": "langchain_text_splitters"
-            },
-            {
-                "id": "nltk",
-                "type": "COMPONENT",
-                "name": "nltk"
-            },
-            {
-                "id": "spacy",
-                "type": "COMPONENT",
-                "name": "spacy"
-            },
-            {
-                "id": "sentence-transformers",
-                "type": "COMPONENT",
-                "name": "sentence-transformers"
-            },
-            {
-                "id": "RecursiveCharacterTextSplitter",
-                "type": "COMPONENT",
-                "name": "RecursiveCharacterTextSplitter"
-            },
-            {
-                "id": "PLC0415",
+                "id": "deep-agents-cli",
                 "type": "CONCEPT",
-                "name": "PLC0415"
+                "name": "Deep Agents CLI"
             },
             {
-                "id": "fix(text-splitters)",
-                "type": "ISSUE",
-                "name": "fix(text-splitters)"
-            }
-        ],
-        "claims": [
-            {
-                "subject_id": "fix(text-splitters)",
-                "relation": "REPORTED",
-                "object_id": "memory bloat",
-                "evidence": [
-                    {
-                        "source_id": "GitHub issue",
-                        "excerpt": "Importing `langchain_text_splitters` eagerly pulls in `nltk`, `spacy`, and `sentence-transformers` (plus `torch` transitively) at module level, adding ~700 MiB RSS even when only lightweight splitters like `RecursiveCharacterTextSplitter` are used.",
-                        "url": "https://github.com/langchain/langchain/issues/35437",
-                        "timestamp": "2026-03-01T20:19:41Z"
-                    }
-                ],
-                "confidence_score": 0.9
-            },
-            {
-                "subject_id": "PLC0415",
-                "relation": "CHANGED_STATE",
-                "object_id": "import structure",
-                "evidence": [
-                    {
-                        "source_id": "GitHub issue",
-                        "excerpt": "This regression was introduced in 1.0.0 when [PLC0415](https://docs.astral.sh/ruff/rules/import-outside-top-level/) moved lazy imports to top-level (PR #32325).",
-                        "url": "https://github.com/langchain/langchain/issues/35437",
-                        "timestamp": "2026-03-01T20:19:41Z"
-                    }
-                ],
-                "confidence_score": 0.9
-            },
-            {
-                "subject_id": "fix(text-splitters)",
-                "relation": "PROPOSED_FIX",
-                "object_id": "lazy-import nltk/spacy/sentence-transformers",
-                "evidence": [
-                    {
-                        "source_id": "GitHub issue",
-                        "excerpt": "Move the three heavy-dep splitter imports (`NLTKTextSplitter`, `SpacyTextSplitter`, `SentenceTransformersTokenTextSplitter`) behind a `__getattr__` lazy loader, following the exact same pattern used throughout `langchain-core` (e.g., `langchain_core.embeddings`, `langchain_core.callbacks`).",
-                        "url": "https://github.com/langchain/langchain/issues/35437",
-                        "timestamp": "2026-03-01T20:19:41Z"
-                    }
-                ],
-                "confidence_score": 0.9
-            }
-        ]
-    },
-    {
-        "source_issue": "github_issue_35498",
-        "extraction_metadata": {
-            "schema_version": "1.1.0",
-            "model_version": "llama-3.3-70b-versatile",
-            "timestamp": 1772401551.0551724
-        },
-        "entities": [
-            {
-                "id": "universeplayer",
-                "type": "USER",
-                "name": "universeplayer"
-            },
-            {
-                "id": "fix(openai)",
-                "type": "ISSUE",
-                "name": "fix(openai)"
-            },
-            {
-                "id": "mdrxy",
-                "type": "USER",
-                "name": "mdrxy"
-            },
-            {
-                "id": "codspeed-hq[bot]",
-                "type": "USER",
-                "name": "codspeed-hq[bot]"
-            },
-            {
-                "id": "ChatOpenAI",
+                "id": "langchain-classic",
                 "type": "COMPONENT",
-                "name": "ChatOpenAI"
-            },
-            {
-                "id": "issue with ChatOpenAI",
-                "type": "ISSUE",
-                "name": "issue with ChatOpenAI"
-            },
-            {
-                "id": "performance report",
-                "type": "CONCEPT",
-                "name": "performance report"
+                "name": "langchain-classic"
             }
         ],
         "claims": [
             {
-                "subject_id": "universeplayer",
+                "subject_id": "Deep Agents CLI",
                 "relation": "PROPOSED_FIX",
-                "object_id": "fix(openai)",
+                "object_id": "langchain-classic",
                 "evidence": [
                     {
-                        "source_id": "https://github.com/langchain-ai/langchain/issues/32252",
-                        "excerpt": "Fixes #32252",
-                        "url": "https://github.com/langchain-ai/langchain/issues/32252",
-                        "timestamp": "2026-03-01T20:07:36Z"
-                    }
-                ],
-                "confidence_score": 0.8
-            },
-            {
-                "subject_id": "mdrxy",
-                "relation": "REPORTED",
-                "object_id": "issue with ChatOpenAI",
-                "evidence": [
-                    {
-                        "source_id": "https://github.com/langchain-ai/langchain/issues/34328",
-                        "excerpt": "Putting this complexity into ChatOpenAI to handle a non-OpenAI provider is not warranted.",
-                        "url": "https://github.com/langchain-ai/langchain/issues/34328",
-                        "timestamp": "2026-03-01T20:09:52Z"
-                    }
-                ],
-                "confidence_score": 0.9
-            },
-            {
-                "subject_id": "codspeed-hq[bot]",
-                "relation": "REPORTED",
-                "object_id": "performance report",
-                "evidence": [
-                    {
-                        "source_id": "https://codspeed.io/langchain-ai/langchain/branches/universeplayer%3Afix%2Fvllm-null-choices",
-                        "excerpt": "Merging this PR will **not alter performance**",
-                        "url": "https://codspeed.io/langchain-ai/langchain/branches/universeplayer%3Afix%2Fvllm-null-choices",
-                        "timestamp": "2026-03-01T20:14:44Z"
+                        "source_id": "issue",
+                        "excerpt": "Patch bump langchain-classic from 1.0.1 to 1.0.2.",
+                        "url": "https://github.com/langchain/langchain/issues/XXXX",
+                        "timestamp": "2026-03-06T19:27:48Z"
                     }
                 ],
                 "confidence_score": 0.8
@@ -178,574 +36,35 @@
         ]
     },
     {
-        "source_issue": "github_issue_35497",
+        "source_issue": "github_issue_35600",
         "extraction_metadata": {
             "schema_version": "1.1.0",
             "model_version": "llama-3.3-70b-versatile",
-            "timestamp": 1772401551.0551724
+            "timestamp": 1772829108.9001904
         },
         "entities": [
-            {
-                "id": "giulio-leone",
-                "type": "USER",
-                "name": "giulio-leone"
-            },
-            {
-                "id": "fix(core): make trim_messages respect tool-call group integrity",
-                "type": "ISSUE",
-                "name": "fix(core): make trim_messages respect tool-call group integrity"
-            }
-        ],
-        "claims": [
-            {
-                "subject_id": "giulio-leone",
-                "relation": "PROPOSED_FIX",
-                "object_id": "fix(core): make trim_messages respect tool-call group integrity",
-                "evidence": [
-                    {
-                        "source_id": "github_issue_comment",
-                        "excerpt": "Added in 4da7f56: new test `test_trim_messages_tool_group_never_split_first_allow_partial` covering `strategy=\"first\"` + `allow_partial=True` with a tool-call group that partially fits the budget.",
-                        "url": "https://github.com/issue/comment",
-                        "timestamp": "2026-03-01T18:23:22Z"
-                    }
-                ],
-                "confidence_score": 0.8
-            },
-            {
-                "subject_id": "giulio-leone",
-                "relation": "PROPOSED_FIX",
-                "object_id": "fix(core): make trim_messages respect tool-call group integrity",
-                "evidence": [
-                    {
-                        "source_id": "github_issue_comment",
-                        "excerpt": "Added test for `strategy='first'` + `allow_partial=True` with a tool-call group that doesn't fit the budget (commit a74fd00).",
-                        "url": "https://github.com/issue/comment",
-                        "timestamp": "2026-03-01T18:48:44Z"
-                    }
-                ],
-                "confidence_score": 0.8
-            }
-        ]
-    },
-    {
-        "source_issue": "github_issue_35496",
-        "extraction_metadata": {
-            "schema_version": "1.1.0",
-            "model_version": "llama-3.3-70b-versatile",
-            "timestamp": 1772401551.0551724
-        },
-        "entities": [
-            {
-                "id": "lonnie08",
-                "type": "USER",
-                "name": "lonnie08"
-            },
-            {
-                "id": "issue-35442",
-                "type": "ISSUE",
-                "name": "issue-35442"
-            },
-            {
-                "id": "codspeed-hq[bot]",
-                "type": "USER",
-                "name": "codspeed-hq[bot]"
-            }
-        ],
-        "claims": [
-            {
-                "subject_id": "lonnie08",
-                "relation": "PROPOSED_FIX",
-                "object_id": "issue-35442",
-                "evidence": [
-                    {
-                        "source_id": "issue-35442",
-                        "excerpt": "Fixes #35442",
-                        "url": "https://github.com/langchain-ai/langchain/issues/35442",
-                        "timestamp": "2026-03-01T14:28:07Z"
-                    }
-                ],
-                "confidence_score": 1.0
-            },
-            {
-                "subject_id": "codspeed-hq[bot]",
-                "relation": "REPORTED",
-                "object_id": "issue-35442",
-                "evidence": [
-                    {
-                        "source_id": "issue-35442",
-                        "excerpt": "Merging this PR will **not alter performance**",
-                        "url": "https://github.com/langchain-ai/langchain/issues/35442",
-                        "timestamp": "2026-03-01T14:30:14Z"
-                    }
-                ],
-                "confidence_score": 1.0
-            }
-        ]
-    },
-    {
-        "source_issue": "github_issue_35495",
-        "extraction_metadata": {
-            "schema_version": "1.1.0",
-            "model_version": "llama-3.3-70b-versatile",
-            "timestamp": 1772401551.0551724
-        },
-        "entities": [
-            {
-                "id": "codspeed-hq[bot]",
-                "type": "USER",
-                "name": "codspeed-hq[bot]"
-            },
-            {
-                "id": "test(chatglm)",
-                "type": "ISSUE",
-                "name": "test(chatglm): add tests for invalid API and timeout scenarios"
-            },
-            {
-                "id": "ChatGLM chat model",
-                "type": "CONCEPT",
-                "name": "ChatGLM chat model"
-            }
-        ],
-        "claims": [
-            {
-                "subject_id": "codspeed-hq[bot]",
-                "relation": "REPORTED",
-                "object_id": "PR #XXX",
-                "evidence": [
-                    {
-                        "source_id": "codspeed-hq[bot]",
-                        "excerpt": "Merging this PR will **not alter performance**",
-                        "url": "https://github.com/langchain-ai/langchain/pull/XXX",
-                        "timestamp": "2026-03-01T14:13:16Z"
-                    }
-                ],
-                "confidence_score": 0.8
-            },
-            {
-                "subject_id": "test(chatglm)",
-                "relation": "PROPOSED_FIX",
-                "object_id": "ChatGLM chat model",
-                "evidence": [
-                    {
-                        "source_id": "test(chatglm)",
-                        "excerpt": "Add tests to verify ChatGLM chat model's error handling for invalid API addresses and timeouts",
-                        "url": "https://github.com/langchain-ai/langchain/pull/XXX",
-                        "timestamp": "2026-03-01T14:06:52Z"
-                    }
-                ],
-                "confidence_score": 0.9
-            }
-        ]
-    },
-    {
-        "source_issue": "github_issue_35493",
-        "extraction_metadata": {
-            "schema_version": "1.1.0",
-            "model_version": "llama-3.3-70b-versatile",
-            "timestamp": 1772401551.0551724
-        },
-        "entities": [
-            {
-                "id": "user",
-                "type": "USER",
-                "name": "user"
-            },
-            {
-                "id": "issue-35492",
-                "type": "ISSUE",
-                "name": "issue-35492"
-            }
-        ],
-        "claims": [
-            {
-                "subject_id": "user",
-                "relation": "PROPOSED_FIX",
-                "object_id": "issue-35492",
-                "evidence": [
-                    {
-                        "source_id": "issue-35492",
-                        "excerpt": "Fixes #35492",
-                        "url": "https://github.com/user-attachments/issues/35492",
-                        "timestamp": "2026-03-01T09:29:37Z"
-                    }
-                ],
-                "confidence_score": 0.9
-            }
-        ]
-    },
-    {
-        "source_issue": "github_issue_35492",
-        "extraction_metadata": {
-            "schema_version": "1.1.0",
-            "model_version": "llama-3.3-70b-versatile",
-            "timestamp": 1772401551.0551724
-        },
-        "entities": [
-            {
-                "id": "langchain_core",
-                "type": "COMPONENT",
-                "name": "LangChain Core"
-            },
-            {
-                "id": "user123",
-                "type": "USER",
-                "name": "User 123"
-            }
-        ],
-        "claims": [
-            {
-                "subject_id": "user123",
-                "relation": "REPORTED",
-                "object_id": "langchain_core",
-                "evidence": [
-                    {
-                        "source_id": "github_issue",
-                        "excerpt": "The `Graph.extend()` method creates hierarchical node IDs by joining names with colons (e.g., `parent:child:grandchild`).",
-                        "url": "https://github.com/langchain/langchain/issues/1234",
-                        "timestamp": "2026-03-01T09:19:41Z"
-                    }
-                ],
-                "confidence_score": 0.8
-            }
-        ]
-    },
-    {
-        "source_issue": "github_issue_35491",
-        "extraction_metadata": {
-            "schema_version": "1.1.0",
-            "model_version": "llama-3.3-70b-versatile",
-            "timestamp": 1772401551.0551724
-        },
-        "entities": [
-            {
-                "id": "senguttuvan",
-                "type": "USER",
-                "name": "Navin Senguttuvan"
-            },
-            {
-                "id": "28848",
-                "type": "ISSUE",
-                "name": "Issue #28848"
-            },
-            {
-                "id": "codspeed-hq[bot]",
-                "type": "USER",
-                "name": "codspeed-hq[bot]"
-            }
-        ],
-        "claims": [
-            {
-                "subject_id": "senguttuvan",
-                "relation": "PROPOSED_FIX",
-                "object_id": "28848",
-                "evidence": [
-                    {
-                        "source_id": "issue-123",
-                        "excerpt": "Fixes #28848",
-                        "url": "https://github.com/langchain-ai/langchain/issues/123",
-                        "timestamp": "2026-03-01T06:24:55Z"
-                    }
-                ],
-                "confidence_score": 0.9
-            }
-        ]
-    },
-    {
-        "source_issue": "github_issue_35490",
-        "extraction_metadata": {
-            "schema_version": "1.1.0",
-            "model_version": "llama-3.3-70b-versatile",
-            "timestamp": 1772401551.0551724
-        },
-        "entities": [
-            {
-                "id": "llmtoolselectormiddleware",
-                "type": "COMPONENT",
-                "name": "LLMToolSelectorMiddleware"
-            },
-            {
-                "id": "fix(langchain)",
-                "type": "ISSUE",
-                "name": "fix(langchain)"
-            },
-            {
-                "id": "claude",
-                "type": "CONCEPT",
-                "name": "Claude"
-            },
-            {
-                "id": "issue-123",
-                "type": "ISSUE",
-                "name": "issue-123"
-            }
-        ],
-        "claims": [
-            {
-                "subject_id": "LLMToolSelectorMiddleware",
-                "relation": "CHANGED_STATE",
-                "object_id": "fix(langchain)",
-                "evidence": [
-                    {
-                        "source_id": "issue-123",
-                        "excerpt": "handle missing 'tools' key in LLMToolSelectorMiddleware response",
-                        "url": "https://github.com/org/repo/issues/123",
-                        "timestamp": "2026-03-01T02:37:32Z"
-                    }
-                ],
-                "confidence_score": 0.8
-            },
-            {
-                "subject_id": "Claude",
-                "relation": "PROPOSED_FIX",
-                "object_id": "fix(langchain)",
-                "evidence": [
-                    {
-                        "source_id": "issue-123",
-                        "excerpt": "This PR was developed with the assistance of an AI agent (Claude).",
-                        "url": "https://github.com/org/repo/issues/123",
-                        "timestamp": "2026-03-01T02:37:32Z"
-                    }
-                ],
-                "confidence_score": 0.9
-            }
-        ]
-    },
-    {
-        "source_issue": "github_issue_35489",
-        "extraction_metadata": {
-            "schema_version": "1.1.0",
-            "model_version": "llama-3.3-70b-versatile",
-            "timestamp": 1772401551.0551724
-        },
-        "entities": [
-            {
-                "id": "priyankakukreja267",
-                "type": "USER",
-                "name": "priyankakukreja267"
-            },
-            {
-                "id": "benchmark tooling",
-                "type": "CONCEPT",
-                "name": "benchmark tooling"
-            }
-        ],
-        "claims": [
-            {
-                "subject_id": "priyankakukreja267",
-                "relation": "REPORTED",
-                "object_id": "benchmark tooling",
-                "evidence": [
-                    {
-                        "source_id": "comment",
-                        "excerpt": "benchmark tooling is flaky - re-triggering the tests",
-                        "url": "https://github.com/",
-                        "timestamp": "2026-03-01T02:32:59Z"
-                    }
-                ],
-                "confidence_score": 0.8
-            }
-        ]
-    },
-    {
-        "source_issue": "github_issue_35488",
-        "extraction_metadata": {
-            "schema_version": "1.1.0",
-            "model_version": "llama-3.3-70b-versatile",
-            "timestamp": 1772401551.0551724
-        },
-        "entities": [
-            {
-                "id": "ademicho123",
-                "type": "USER",
-                "name": "ademicho123"
-            },
-            {
-                "id": "issue-28848",
-                "type": "ISSUE",
-                "name": "issue-28848"
-            },
-            {
-                "id": "codspeed-hq[bot]",
-                "type": "USER",
-                "name": "codspeed-hq[bot]"
-            },
-            {
-                "id": "ademicho123:fix/structured-output-bind-tools-28848",
-                "type": "ISSUE",
-                "name": "ademicho123:fix/structured-output-bind-tools-28848"
-            }
-        ],
-        "claims": [
-            {
-                "subject_id": "ademicho123",
-                "relation": "PROPOSED_FIX",
-                "object_id": "issue-28848",
-                "evidence": [
-                    {
-                        "source_id": "issue-28848",
-                        "excerpt": "Fixes #28848",
-                        "url": "https://github.com/langchain-ai/langchain/issues/28848",
-                        "timestamp": "2026-02-28T22:51:16Z"
-                    }
-                ],
-                "confidence_score": 0.9
-            },
-            {
-                "subject_id": "codspeed-hq[bot]",
-                "relation": "REPORTED",
-                "object_id": "ademicho123:fix/structured-output-bind-tools-28848",
-                "evidence": [
-                    {
-                        "source_id": "comment-123",
-                        "excerpt": "Merging this PR will **not alter performance**",
-                        "url": "https://github.com/langchain-ai/langchain/pull/123",
-                        "timestamp": "2026-02-28T23:03:48Z"
-                    }
-                ],
-                "confidence_score": 0.8
-            }
-        ]
-    },
-    {
-        "source_issue": "github_issue_35487",
-        "extraction_metadata": {
-            "schema_version": "1.1.0",
-            "model_version": "llama-3.3-70b-versatile",
-            "timestamp": 1772401551.0551724
-        },
-        "entities": [
-            {
-                "id": "giulio-leone",
-                "type": "USER",
-                "name": "giulio-leone"
-            },
-            {
-                "id": "fix: preserve tool_use/tool_result pairs in trim_messages",
-                "type": "ISSUE",
-                "name": "fix: preserve tool_use/tool_result pairs in trim_messages"
-            }
-        ],
-        "claims": [
-            {
-                "subject_id": "giulio-leone",
-                "relation": "PROPOSED_FIX",
-                "object_id": "fix: preserve tool_use/tool_result pairs in trim_messages",
-                "evidence": [
-                    {
-                        "source_id": "github_comment",
-                        "excerpt": "All actual tests, lint, and type checks pass (85/87). The only failing checks are CodSpeed Benchmarks (requires main branch baseline) and the derived \"CI Success\" meta-check.",
-                        "url": "https://github.com/issue/comment",
-                        "timestamp": "2026-03-01T03:59:45Z"
-                    }
-                ],
-                "confidence_score": 0.8
-            },
-            {
-                "subject_id": "fix: preserve tool_use/tool_result pairs in trim_messages",
-                "relation": "CHANGED_STATE",
-                "object_id": "open",
-                "evidence": [
-                    {
-                        "source_id": "github_issue",
-                        "excerpt": "State: open",
-                        "url": "https://github.com/issue",
-                        "timestamp": "2026-02-28T16:56:41Z"
-                    }
-                ],
-                "confidence_score": 0.9
-            }
-        ]
-    },
-    {
-        "source_issue": "github_issue_35486",
-        "extraction_metadata": {
-            "schema_version": "1.1.0",
-            "model_version": "llama-3.3-70b-versatile",
-            "timestamp": 1772401551.0551724
-        },
-        "entities": [
-            {
-                "id": "giulio-leone",
-                "type": "USER",
-                "name": "Giulio Leone"
-            },
-            {
-                "id": "issue-123",
-                "type": "ISSUE",
-                "name": "fix(openai): ensure stream=False in payload when disable_streaming is active"
-            },
-            {
-                "id": "issue-35436",
-                "type": "ISSUE",
-                "name": "disable_streaming='tool_calling' causes crash"
-            }
-        ],
-        "claims": [
-            {
-                "subject_id": "giulio-leone",
-                "relation": "REPORTED",
-                "object_id": "issue-35436",
-                "evidence": [
-                    {
-                        "source_id": "issue-123",
-                        "excerpt": "Fixes #35436",
-                        "url": "https://github.com/langchain-ai/langchain/issues/123",
-                        "timestamp": "2026-02-28T16:28:01Z"
-                    }
-                ],
-                "confidence_score": 0.9
-            }
-        ]
-    },
-    {
-        "source_issue": "github_issue_35485",
-        "extraction_metadata": {
-            "schema_version": "1.1.0",
-            "model_version": "llama-3.3-70b-versatile",
-            "timestamp": 1772401551.0551724
-        },
-        "entities": [
-            {
-                "id": "giulio-leone",
-                "type": "USER",
-                "name": "giulio-leone"
-            },
-            {
-                "id": "fix(core): fix RunnableRetry.batch position corruption with return_exceptions",
-                "type": "ISSUE",
-                "name": "fix(core): fix RunnableRetry.batch position corruption with return_exceptions"
-            },
             {
                 "id": "35475",
                 "type": "ISSUE",
-                "name": "35475"
+                "name": "issue #35475"
+            },
+            {
+                "id": "gitbalaji",
+                "type": "USER",
+                "name": "gitbalaji"
             }
         ],
         "claims": [
             {
-                "subject_id": "giulio-leone",
-                "relation": "PROPOSED_FIX",
-                "object_id": "fix(core): fix RunnableRetry.batch position corruption with return_exceptions",
-                "evidence": [
-                    {
-                        "source_id": "github_comment",
-                        "excerpt": "All actual tests, lint, and type checks pass (85/87). The only failing checks are CodSpeed Benchmarks (requires main branch baseline) and the derived \"CI Success\" meta-check.",
-                        "url": "https://github.com/issue/comment",
-                        "timestamp": "2026-03-01T03:59:46Z"
-                    }
-                ],
-                "confidence_score": 0.8
-            },
-            {
-                "subject_id": "fix(core): fix RunnableRetry.batch position corruption with return_exceptions",
+                "subject_id": "gitbalaji",
                 "relation": "REPORTED",
                 "object_id": "35475",
                 "evidence": [
                     {
                         "source_id": "github_issue",
                         "excerpt": "Fixes #35475",
-                        "url": "https://github.com/issue",
-                        "timestamp": "2026-02-28T16:23:04Z"
+                        "url": "https://github.com/langchain-ai/langchain/issues/35475",
+                        "timestamp": "2026-03-06T19:25:07Z"
                     }
                 ],
                 "confidence_score": 0.9
@@ -753,110 +72,35 @@
         ]
     },
     {
-        "source_issue": "github_issue_35484",
+        "source_issue": "github_issue_35599",
         "extraction_metadata": {
             "schema_version": "1.1.0",
             "model_version": "llama-3.3-70b-versatile",
-            "timestamp": 1772401551.0551724
+            "timestamp": 1772829108.9001904
         },
         "entities": [
             {
-                "id": "fix(huggingface)",
-                "type": "USER",
-                "name": "fix(huggingface)"
-            },
-            {
-                "id": "Pydantic models",
-                "type": "CONCEPT",
-                "name": "Pydantic models"
-            },
-            {
-                "id": "with_structured_output",
-                "type": "CONCEPT",
-                "name": "with_structured_output"
-            },
-            {
-                "id": "issue #32197",
-                "type": "ISSUE",
-                "name": "issue #32197"
-            }
-        ],
-        "claims": [
-            {
-                "subject_id": "fix(huggingface)",
-                "relation": "PROPOSED_FIX",
-                "object_id": "Pydantic models in with_structured_output",
-                "evidence": [
-                    {
-                        "source_id": "GitHub issue",
-                        "excerpt": "use PydanticOutputParser for Pydantic models in with_structured_output",
-                        "url": "https://github.com",
-                        "timestamp": "2026-02-28T14:44:53Z"
-                    }
-                ],
-                "confidence_score": 0.9
-            },
-            {
-                "subject_id": "fix(huggingface)",
-                "relation": "CHANGED_STATE",
-                "object_id": "issue #32197",
-                "evidence": [
-                    {
-                        "source_id": "GitHub issue",
-                        "excerpt": "Fixes #32197",
-                        "url": "https://github.com",
-                        "timestamp": "2026-02-28T14:44:53Z"
-                    }
-                ],
-                "confidence_score": 0.9
-            }
-        ]
-    },
-    {
-        "source_issue": "github_issue_35483",
-        "extraction_metadata": {
-            "schema_version": "1.1.0",
-            "model_version": "llama-3.3-70b-versatile",
-            "timestamp": 1772401551.0551724
-        },
-        "entities": [
-            {
-                "id": "langchain-huggingface",
+                "id": "langchain_classic",
                 "type": "COMPONENT",
-                "name": "langchain-huggingface"
+                "name": "langchain_classic package"
             },
             {
-                "id": "user",
-                "type": "USER",
-                "name": "user"
-            },
-            {
-                "id": "Shivangisharma4",
-                "type": "USER",
-                "name": "Shivangisharma4"
-            },
-            {
-                "id": "MichaelKarpe",
-                "type": "USER",
-                "name": "MichaelKarpe"
-            },
-            {
-                "id": "#35182",
-                "type": "ISSUE",
-                "name": "PR #35182"
+                "id": "openai",
+                "type": "COMPONENT",
+                "name": "OpenAI SDK"
             }
         ],
         "claims": [
             {
-                "subject_id": "user",
-                "relation": "REPORTED",
-                "object_id": "langchain-huggingface",
+                "subject_id": "author",
+                "relation": "PROPOSED_FIX",
+                "object_id": "langchain_classic",
                 "evidence": [
                     {
                         "source_id": "issue_body",
-                        "excerpt": "Despite #35182, langchain-huggingface==1.2.1 has not been released to pypi and installing this version with pip does not work",
-                        "url": "https://github.com/langchain/langchain/issues/XXXXX",
-                        "timestamp": "2026-02-28T13:04:49Z"
+                        "excerpt": "the correct fix is `type: ignore` annotations rather than code changes",
+                        "url": "issue_url",
+                        "timestamp": "2026-03-06T19:18:14Z"
                     }
                 ],
                 "confidence_score": 0.9
@@ -864,108 +108,92 @@
         ]
     },
     {
-        "source_issue": "github_issue_35482",
+        "source_issue": "github_issue_35598",
         "extraction_metadata": {
             "schema_version": "1.1.0",
             "model_version": "llama-3.3-70b-versatile",
-            "timestamp": 1772401551.0551724
+            "timestamp": 1772829108.9001904
         },
-        "entities": [
-            {
-                "id": "umut-polat",
-                "type": "USER",
-                "name": "Umut Polat"
-            },
-            {
-                "id": "langchain-ai/langchain",
-                "type": "COMPONENT",
-                "name": "Langchain AI"
-            },
-            {
-                "id": "issue-123",
-                "type": "ISSUE",
-                "name": "Fix(openai): fix if/elif chain and unhandled tool name in _consolidate_calls"
-            }
-        ],
-        "claims": [
-            {
-                "subject_id": "umut-polat",
-                "relation": "REPORTED",
-                "object_id": "umut-polat:fix/consolidate-calls-elif",
-                "evidence": [
-                    {
-                        "source_id": "issue-123",
-                        "excerpt": "the `file_search` branch uses a bare `if` instead of `elif`, breaking the mutually exclusive chain that starts with `web_search`",
-                        "url": "https://github.com/langchain-ai/langchain/issues/123",
-                        "timestamp": "2026-02-28T12:27:10Z"
-                    }
-                ],
-                "confidence_score": 0.8
-            }
-        ]
+        "entities": [],
+        "claims": []
     },
     {
-        "source_issue": "github_issue_35481",
+        "source_issue": "github_issue_35597",
         "extraction_metadata": {
             "schema_version": "1.1.0",
             "model_version": "llama-3.3-70b-versatile",
-            "timestamp": 1772401551.0551724
+            "timestamp": 1772829108.9001904
         },
         "entities": [
             {
-                "id": "35259",
-                "type": "ISSUE",
-                "name": "fix(core): guard merge_lists against non-dict elements when matching by index"
+                "id": "langchain-ai",
+                "type": "ORGANIZATION",
+                "name": "LangChain AI"
             },
             {
-                "id": "giulio-leone",
+                "id": "christianboris",
                 "type": "USER",
-                "name": "giulio-leone"
+                "name": "Christian Boris"
+            },
+            {
+                "id": "langchain-openai",
+                "type": "PACKAGE",
+                "name": "LangChain OpenAI"
+            },
+            {
+                "id": "langchain-anthropic",
+                "type": "PACKAGE",
+                "name": "LangChain Anthropic"
             }
         ],
         "claims": [
             {
-                "subject_id": "giulio-leone",
-                "relation": "PROPOSED_FIX",
-                "object_id": "fix(core): guard merge_lists against non-dict elements when matching by index",
-                "evidence": [
-                    {
-                        "source_id": "github_issue",
-                        "excerpt": "Add `isinstance(e_left, dict)` guard before accessing dict-specific attributes.",
-                        "url": "https://github.com/issues/35259",
-                        "timestamp": "2026-03-01T03:59:47Z"
-                    }
-                ],
-                "confidence_score": 0.8
-            },
-            {
-                "subject_id": "giulio-leone",
+                "subject_id": "christianboris",
                 "relation": "REPORTED",
-                "object_id": "TypeError: string indices must be integers, not 'str'",
+                "object_id": "LangChain",
                 "evidence": [
                     {
-                        "source_id": "github_issue",
-                        "excerpt": "`merge_lists` crashes with `TypeError: string indices must be integers, not 'str'` when the merged list contains a mix of strings and dicts with `index` keys.",
-                        "url": "https://github.com/issues/35259",
-                        "timestamp": "2026-02-28T09:54:49Z"
+                        "source_id": "GitHub issue",
+                        "excerpt": "When users create a `ChatOpenAI` or `ChatAnthropic` instance without explicitly setting `request_timeout`, the default value `None` is passed through to the underlying SDK (`openai.OpenAI(timeout=None)` / `anthropic.Anthropic(timeout=None)`).",
+                        "url": "https://github.com/langchain-ai/langchain/issues/13124",
+                        "timestamp": "2026-03-06T17:55:12Z"
                     }
                 ],
                 "confidence_score": 0.9
+            },
+            {
+                "subject_id": "christianboris",
+                "relation": "REPORTED",
+                "object_id": "LangChain",
+                "evidence": [
+                    {
+                        "source_id": "GitHub issue",
+                        "excerpt": "The bug is not resolved by updating to the latest stable version of LangChain (or the specific integration package)",
+                        "url": "https://github.com/langchain-ai/langchain/issues/13124",
+                        "timestamp": "2026-03-06T17:55:12Z"
+                    }
+                ],
+                "confidence_score": 0.8
             }
         ]
     },
     {
-        "source_issue": "github_issue_35480",
+        "source_issue": "github_issue_35596",
         "extraction_metadata": {
             "schema_version": "1.1.0",
             "model_version": "llama-3.3-70b-versatile",
-            "timestamp": 1772401551.0551724
+            "timestamp": 1772829108.9001904
         },
         "entities": [
             {
-                "id": "giulio-leone",
+                "id": "JiwaniZakir",
                 "type": "USER",
-                "name": "giulio-leone"
+                "name": "JiwaniZakir"
+            },
+            {
+                "id": "issue-35492",
+                "type": "ISSUE",
+                "name": "issue-35492"
             },
             {
                 "id": "codspeed-hq[bot]",
@@ -973,32 +201,142 @@
                 "name": "codspeed-hq[bot]"
             },
             {
-                "id": "fix(openai)",
-                "type": "ISSUE",
-                "name": "fix(openai)"
-            },
-            {
-                "id": "issue-35436",
-                "type": "ISSUE",
-                "name": "issue-35436"
-            },
-            {
-                "id": "issue-35486",
-                "type": "ISSUE",
-                "name": "issue-35486"
+                "id": "performance-improvement",
+                "type": "CONCEPT",
+                "name": "performance-improvement"
             }
         ],
         "claims": [
             {
-                "subject_id": "giulio-leone",
+                "subject_id": "JiwaniZakir",
                 "relation": "PROPOSED_FIX",
-                "object_id": "fix(openai)",
+                "object_id": "issue-35492",
                 "evidence": [
                     {
-                        "source_id": "issue-35436",
-                        "excerpt": "Pop `stream` from the payload at the start of both `_generate()` and `_agenerate()`",
-                        "url": "https://github.com/langchain-ai/langchain/issues/35436",
-                        "timestamp": "2026-02-28T09:49:07Z"
+                        "source_id": "issue-comment",
+                        "excerpt": "This addresses #35492.",
+                        "url": "https://github.com/langchain-ai/langchain/issues/35492",
+                        "timestamp": "2026-03-06T14:44:28Z"
+                    }
+                ],
+                "confidence_score": 0.9
+            },
+            {
+                "subject_id": "codspeed-hq[bot]",
+                "relation": "REPORTED",
+                "object_id": "performance-improvement",
+                "evidence": [
+                    {
+                        "source_id": "issue-comment",
+                        "excerpt": "Merging this PR will **improve performance by 37.51%**",
+                        "url": "https://github.com/langchain-ai/langchain/issues/35492",
+                        "timestamp": "2026-03-06T14:48:02Z"
+                    }
+                ],
+                "confidence_score": 0.9
+            }
+        ]
+    },
+    {
+        "source_issue": "github_issue_35595",
+        "extraction_metadata": {
+            "schema_version": "1.1.0",
+            "model_version": "llama-3.3-70b-versatile",
+            "timestamp": 1772829108.9001904
+        },
+        "entities": [
+            {
+                "id": "goingforstudying-ctrl",
+                "type": "USER",
+                "name": "goingforstudying-ctrl"
+            },
+            {
+                "id": "35584",
+                "type": "ISSUE",
+                "name": "35584"
+            },
+            {
+                "id": "codspeed-hq[bot]",
+                "type": "USER",
+                "name": "codspeed-hq[bot]"
+            },
+            {
+                "id": "gpt-5.4",
+                "type": "CONCEPT",
+                "name": "gpt-5.4"
+            }
+        ],
+        "claims": [
+            {
+                "subject_id": "goingforstudying-ctrl",
+                "relation": "PROPOSED_FIX",
+                "object_id": "35584",
+                "evidence": [
+                    {
+                        "source_id": "issue_title",
+                        "excerpt": "fix: Add gpt-5.4+ models to Responses API detection (fixes #35584)",
+                        "url": "https://github.com/langchain-ai/langchain/issues/fix/gpt-5.4-responses-api",
+                        "timestamp": "2026-03-06T14:40:56Z"
+                    }
+                ],
+                "confidence_score": 0.9
+            },
+            {
+                "subject_id": "codspeed-hq[bot]",
+                "relation": "REPORTED",
+                "object_id": "performance_report",
+                "evidence": [
+                    {
+                        "source_id": "comment_by_codspeed-hq[bot]",
+                        "excerpt": "Merging this PR will **not alter performance**",
+                        "url": "https://github.com/langchain-ai/langchain/issues/fix/gpt-5.4-responses-api",
+                        "timestamp": "2026-03-06T14:48:01Z"
+                    }
+                ],
+                "confidence_score": 0.8
+            }
+        ]
+    },
+    {
+        "source_issue": "github_issue_35594",
+        "extraction_metadata": {
+            "schema_version": "1.1.0",
+            "model_version": "llama-3.3-70b-versatile",
+            "timestamp": 1772829108.9001904
+        },
+        "entities": [
+            {
+                "id": "keenborder786",
+                "type": "USER",
+                "name": "keenborder786"
+            },
+            {
+                "id": "openai",
+                "type": "CONCEPT",
+                "name": "OpenAI"
+            },
+            {
+                "id": "codspeed-hq[bot]",
+                "type": "USER",
+                "name": "codspeed-hq[bot]"
+            },
+            {
+                "id": "issue-123",
+                "type": "ISSUE",
+                "name": "fix(openai): update responses API model detection for pro and codex models"
+            }
+        ],
+        "claims": [
+            {
+                "subject_id": "keenborder786",
+                "relation": "PROPOSED_FIX",
+                "object_id": "openai",
+                "evidence": [
+                    {
+                        "source_id": "issue-123",
+                        "excerpt": "update responses API model detection for pro and codex models",
+                        "url": "https://github.com/langchain-ai/langchain/issues/123",
+                        "timestamp": "2026-03-06T10:53:41Z"
                     }
                 ],
                 "confidence_score": 0.8
@@ -1011,22 +349,44 @@
                     {
                         "source_id": "comment-123",
                         "excerpt": "Merging this PR will **not alter performance**",
-                        "url": "https://github.com/langchain-ai/langchain/issues/35436#comment-123",
-                        "timestamp": "2026-02-28T09:55:41Z"
+                        "url": "https://github.com/langchain-ai/langchain/issues/123#comment-123",
+                        "timestamp": "2026-03-06T11:00:40Z"
                     }
                 ],
                 "confidence_score": 0.9
+            }
+        ]
+    },
+    {
+        "source_issue": "github_issue_35593",
+        "extraction_metadata": {
+            "schema_version": "1.1.0",
+            "model_version": "llama-3.3-70b-versatile",
+            "timestamp": 1772829108.9001904
+        },
+        "entities": [
+            {
+                "id": "refresh_model_profiles_workflow",
+                "type": "CONCEPT",
+                "name": "refresh_model_profiles workflow"
             },
             {
-                "subject_id": "giulio-leone",
-                "relation": "CHANGED_STATE",
-                "object_id": "issue-35436",
+                "id": "model_profile_data",
+                "type": "CONCEPT",
+                "name": "model profile data"
+            }
+        ],
+        "claims": [
+            {
+                "subject_id": "refresh_model_profiles_workflow",
+                "relation": "REPORTED",
+                "object_id": "model_profile_data",
                 "evidence": [
                     {
-                        "source_id": "comment-456",
-                        "excerpt": "Closing in favor of #35486",
-                        "url": "https://github.com/langchain-ai/langchain/issues/35436#comment-456",
-                        "timestamp": "2026-02-28T18:18:53Z"
+                        "source_id": "issue_body",
+                        "excerpt": "Automated refresh of model profile data for all in-monorepo partner integrations via `langchain-profiles refresh`.",
+                        "url": "https://github.com/langchain-ai/langchain/issues/issue_body",
+                        "timestamp": "2026-03-06T08:09:38Z"
                     }
                 ],
                 "confidence_score": 0.8
@@ -1034,59 +394,380 @@
         ]
     },
     {
-        "source_issue": "github_issue_35479",
+        "source_issue": "github_issue_35592",
         "extraction_metadata": {
             "schema_version": "1.1.0",
             "model_version": "llama-3.3-70b-versatile",
-            "timestamp": 1772401551.0551724
+            "timestamp": 1772829108.9001904
         },
         "entities": [
             {
-                "id": "gautamvarmadatla",
-                "type": "USER",
-                "name": "gautamvarmadatla"
+                "id": "types-pytz",
+                "type": "COMPONENT",
+                "name": "types-pytz"
             },
             {
-                "id": "giulio-leone",
-                "type": "USER",
-                "name": "giulio-leone"
-            },
-            {
-                "id": "abatch_as_completed",
+                "id": "dependabot",
                 "type": "CONCEPT",
-                "name": "abatch_as_completed"
-            },
-            {
-                "id": "pending tasks",
-                "type": "CONCEPT",
-                "name": "pending tasks"
+                "name": "Dependabot"
             }
         ],
         "claims": [
             {
-                "subject_id": "gautamvarmadatla",
-                "relation": "REPORTED",
-                "object_id": "giulio-leone",
+                "subject_id": "dependabot",
+                "relation": "PROPOSED_FIX",
+                "object_id": "types-pytz",
                 "evidence": [
                     {
-                        "source_id": "github_issue_comment",
-                        "excerpt": "Hi @giulio-leone, I already opened a PR for this fix last week, and your PR makes the exact same change.",
-                        "url": "https://github.com/issue/comment",
-                        "timestamp": "2026-02-28T14:03:04Z"
+                        "source_id": "github_issue",
+                        "excerpt": "Bumps types-pytz from 2025.2.0.20251108 to 2026.1.1.20260304",
+                        "url": "https://github.com/typeshed-internal/stub_uploader",
+                        "timestamp": "2026-03-06T08:06:16Z"
+                    }
+                ],
+                "confidence_score": 0.8
+            }
+        ]
+    },
+    {
+        "source_issue": "github_issue_35591",
+        "extraction_metadata": {
+            "schema_version": "1.1.0",
+            "model_version": "llama-3.3-70b-versatile",
+            "timestamp": 1772829108.9001904
+        },
+        "entities": [
+            {
+                "id": "packaging",
+                "type": "COMPONENT",
+                "name": "packaging"
+            },
+            {
+                "id": "bump from 24.2 to 26.0",
+                "type": "CONCEPT",
+                "name": "bump from 24.2 to 26.0"
+            }
+        ],
+        "claims": [
+            {
+                "subject_id": "packaging",
+                "relation": "REPORTED",
+                "object_id": "bump from 24.2 to 26.0",
+                "evidence": [
+                    {
+                        "source_id": "github issue",
+                        "excerpt": "Bumps packaging from 24.2 to 26.0.",
+                        "url": "https://github.com/pypa/packaging/issues",
+                        "timestamp": "2026-03-06T08:06:05Z"
+                    }
+                ],
+                "confidence_score": 0.8
+            }
+        ]
+    },
+    {
+        "source_issue": "github_issue_35590",
+        "extraction_metadata": {
+            "schema_version": "1.1.0",
+            "model_version": "llama-3.3-70b-versatile",
+            "timestamp": 1772829108.9001904
+        },
+        "entities": [],
+        "claims": []
+    },
+    {
+        "source_issue": "github_issue_35589",
+        "extraction_metadata": {
+            "schema_version": "1.1.0",
+            "model_version": "llama-3.3-70b-versatile",
+            "timestamp": 1772829108.9001904
+        },
+        "entities": [],
+        "claims": []
+    },
+    {
+        "source_issue": "github_issue_35588",
+        "extraction_metadata": {
+            "schema_version": "1.1.0",
+            "model_version": "llama-3.3-70b-versatile",
+            "timestamp": 1772829108.9001904
+        },
+        "entities": [
+            {
+                "id": "INF-0000",
+                "type": "ISSUE",
+                "name": "ci(infra): add top-level permissions and SHA-pin third-party actions"
+            },
+            {
+                "id": "ci(infra)",
+                "type": "COMPONENT",
+                "name": "ci(infra)"
+            },
+            {
+                "id": "pypa/gh-action-pypi-publish",
+                "type": "CONCEPT",
+                "name": "pypa/gh-action-pypi-publish"
+            },
+            {
+                "id": "SHA-pinning",
+                "type": "CONCEPT",
+                "name": "SHA-pinning"
+            }
+        ],
+        "claims": [
+            {
+                "subject_id": "INF-0000",
+                "relation": "REPORTED",
+                "object_id": "ci(infra)",
+                "evidence": [
+                    {
+                        "source_id": "INF-0000",
+                        "excerpt": "Adds top-level `permissions: contents: read` to 5 workflows",
+                        "url": "https://github.com/issue/INF-0000",
+                        "timestamp": "2026-03-06T07:17:09Z"
+                    }
+                ],
+                "confidence_score": 0.8
+            },
+            {
+                "subject_id": "INF-0000",
+                "relation": "CHANGED_STATE",
+                "object_id": "ci(infra)",
+                "evidence": [
+                    {
+                        "source_id": "INF-0000",
+                        "excerpt": "State: closed",
+                        "url": "https://github.com/issue/INF-0000",
+                        "timestamp": "2026-03-06T07:17:09Z"
                     }
                 ],
                 "confidence_score": 0.9
+            }
+        ]
+    },
+    {
+        "source_issue": "github_issue_35587",
+        "extraction_metadata": {
+            "schema_version": "1.1.0",
+            "model_version": "llama-3.3-70b-versatile",
+            "timestamp": 1772829108.9001904
+        },
+        "entities": [
+            {
+                "id": "INF-0000",
+                "type": "ISSUE",
+                "name": "chore(infra): update dependabot.yml to monthly schedule with update-type split"
             },
             {
-                "subject_id": "abatch_as_completed",
+                "id": "dependabot.yml",
+                "type": "COMPONENT",
+                "name": "dependabot.yml"
+            },
+            {
+                "id": "Dependabot",
+                "type": "CONCEPT",
+                "name": "Dependabot"
+            }
+        ],
+        "claims": [
+            {
+                "subject_id": "INF-0000",
                 "relation": "CHANGED_STATE",
-                "object_id": "pending tasks",
+                "object_id": "INF-0000",
                 "evidence": [
                     {
-                        "source_id": "github_issue_body",
-                        "excerpt": "`abatch_as_completed` does not cancel pending tasks when the consumer stops iterating (via exception or `break`)",
+                        "source_id": "INF-0000",
+                        "excerpt": "State: closed",
+                        "url": "https://github.com/issue/INF-0000",
+                        "timestamp": "2026-03-06T07:16:35Z"
+                    }
+                ],
+                "confidence_score": 1.0
+            },
+            {
+                "subject_id": "Dependabot",
+                "relation": "REPORTED",
+                "object_id": "dependabot.yml",
+                "evidence": [
+                    {
+                        "source_id": "INF-0000",
+                        "excerpt": "Changes Dependabot schedule from `weekly` to `monthly`",
+                        "url": "https://github.com/issue/INF-0000",
+                        "timestamp": "2026-03-06T07:16:35Z"
+                    }
+                ],
+                "confidence_score": 1.0
+            },
+            {
+                "subject_id": "INF-0000",
+                "relation": "PROPOSED_FIX",
+                "object_id": "dependabot.yml",
+                "evidence": [
+                    {
+                        "source_id": "INF-0000",
+                        "excerpt": "Adds `update-types` split (major vs minor+patch) to all dependency groups",
+                        "url": "https://github.com/issue/INF-0000",
+                        "timestamp": "2026-03-06T07:16:35Z"
+                    }
+                ],
+                "confidence_score": 1.0
+            }
+        ]
+    },
+    {
+        "source_issue": "github_issue_35586",
+        "extraction_metadata": {
+            "schema_version": "1.1.0",
+            "model_version": "llama-3.3-70b-versatile",
+            "timestamp": 1772829108.9001904
+        },
+        "entities": [
+            {
+                "id": "33966",
+                "type": "ISSUE",
+                "name": "Issue #33966"
+            },
+            {
+                "id": "fix_invoker",
+                "type": "USER",
+                "name": "fix_invoker"
+            }
+        ],
+        "claims": [
+            {
+                "subject_id": "fix_invoker",
+                "relation": "RESOLVED",
+                "object_id": "33966",
+                "evidence": [
+                    {
+                        "source_id": "issue_body",
+                        "excerpt": "Resolves #33966",
+                        "url": "https://github.com/issue_url",
+                        "timestamp": "2026-03-06T05:46:15Z"
+                    }
+                ],
+                "confidence_score": 0.8
+            }
+        ]
+    },
+    {
+        "source_issue": "github_issue_35585",
+        "extraction_metadata": {
+            "schema_version": "1.1.0",
+            "model_version": "llama-3.3-70b-versatile",
+            "timestamp": 1772829108.9001904
+        },
+        "entities": [
+            {
+                "id": "linda-ai-receptionist",
+                "type": "USER",
+                "name": "linda-ai-receptionist"
+            },
+            {
+                "id": "ashmaac",
+                "type": "USER",
+                "name": "ashmaac"
+            },
+            {
+                "id": "InjectedState with a NotRequired state field raises KeyError when the field is absent from state",
+                "type": "ISSUE",
+                "name": "InjectedState with a NotRequired state field raises KeyError when the field is absent from state"
+            }
+        ],
+        "claims": [
+            {
+                "subject_id": "linda-ai-receptionist",
+                "relation": "REPORTED",
+                "object_id": "InjectedState with a NotRequired state field raises KeyError when the field is absent from state",
+                "evidence": [
+                    {
+                        "source_id": "github issue comment",
+                        "excerpt": "Conversely, a similer code does produce a valid tool output with older versions.",
+                        "url": "https://github.com/langchain-ai/langgraph/issues/7039",
+                        "timestamp": "2026-03-06T01:19:43Z"
+                    }
+                ],
+                "confidence_score": 0.8
+            },
+            {
+                "subject_id": "ashmaac",
+                "relation": "PROPOSED_FIX",
+                "object_id": "InjectedState with a NotRequired state field raises KeyError when the field is absent from state",
+                "evidence": [
+                    {
+                        "source_id": "github issue comment",
+                        "excerpt": "I've submitted a fix for this in PR #7039",
+                        "url": "https://github.com/langchain-ai/langgraph/pull/7039",
+                        "timestamp": "2026-03-06T07:08:36Z"
+                    }
+                ],
+                "confidence_score": 0.9
+            }
+        ]
+    },
+    {
+        "source_issue": "github_issue_35584",
+        "extraction_metadata": {
+            "schema_version": "1.1.0",
+            "model_version": "llama-3.3-70b-versatile",
+            "timestamp": 1772829108.9001904
+        },
+        "entities": [
+            {
+                "id": "aryamansi17",
+                "type": "USER",
+                "name": "AryamanSi17"
+            },
+            {
+                "id": "gpt-5.4+",
+                "type": "CONCEPT",
+                "name": "gpt-5.4+ models"
+            },
+            {
+                "id": "issue_123",
+                "type": "ISSUE",
+                "name": "gpt-5.4+ models not detected as Responses API models, causing tool_choice.function error"
+            }
+        ],
+        "claims": [
+            {
+                "subject_id": "AryamanSi17",
+                "relation": "PROPOSED_FIX",
+                "object_id": "gpt-5.4+ models",
+                "evidence": [
+                    {
+                        "source_id": "issue_comment",
+                        "excerpt": "In `libs/partners/openai/langchain_openai/chat_models/base.py`: ...",
+                        "url": "https://github.com/issue_comment",
+                        "timestamp": "2026-03-06T07:21:26Z"
+                    }
+                ],
+                "confidence_score": 0.8
+            },
+            {
+                "subject_id": "gpt-5.4+ models",
+                "relation": "REPORTED",
+                "object_id": "tool_choice.function error",
+                "evidence": [
+                    {
+                        "source_id": "issue_body",
+                        "excerpt": "Unknown parameter: 'tool_choice.function'",
                         "url": "https://github.com/issue",
-                        "timestamp": "2026-02-28T09:40:58Z"
+                        "timestamp": "2026-03-05T22:52:00Z"
+                    }
+                ],
+                "confidence_score": 0.9
+            },
+            {
+                "subject_id": "AryamanSi17",
+                "relation": "CHANGED_STATE",
+                "object_id": "issue assignment",
+                "evidence": [
+                    {
+                        "source_id": "issue_comment",
+                        "excerpt": "@sbusso @jarib @zeke @deepblue Please assign this issue to me!",
+                        "url": "https://github.com/issue_comment",
+                        "timestamp": "2026-03-06T07:21:26Z"
                     }
                 ],
                 "confidence_score": 0.8
@@ -1094,35 +775,35 @@
         ]
     },
     {
-        "source_issue": "github_issue_35478",
+        "source_issue": "github_issue_35583",
         "extraction_metadata": {
             "schema_version": "1.1.0",
             "model_version": "llama-3.3-70b-versatile",
-            "timestamp": 1772401551.0551724
+            "timestamp": 1772829108.9001904
         },
         "entities": [
             {
-                "id": "giulio-leone",
-                "type": "USER",
-                "name": "giulio-leone"
+                "id": "issue_id",
+                "type": "ISSUE",
+                "name": "chore: add note to release workflow"
             },
             {
-                "id": "fix(core): prevent RunnableRetry.batch from returning corrupted outputs on partial failure",
-                "type": "ISSUE",
-                "name": "fix(core): prevent RunnableRetry.batch from returning corrupted outputs on partial failure"
+                "id": "github_actor",
+                "type": "USER",
+                "name": "GitHub Actor"
             }
         ],
         "claims": [
             {
-                "subject_id": "giulio-leone",
+                "subject_id": "github_actor",
                 "relation": "CHANGED_STATE",
-                "object_id": "fix(core): prevent RunnableRetry.batch from returning corrupted outputs on partial failure",
+                "object_id": "issue_id",
                 "evidence": [
                     {
-                        "source_id": "github issue comment",
-                        "excerpt": "Closing in favor of #35485 which has the correct fix.",
-                        "url": "https://github.com/issue/comment",
-                        "timestamp": "2026-02-28T18:18:53Z"
+                        "source_id": "issue_id",
+                        "excerpt": "State: closed",
+                        "url": "issue_url",
+                        "timestamp": "2026-03-05T22:06:50Z"
                     }
                 ],
                 "confidence_score": 1.0
@@ -1130,162 +811,54 @@
         ]
     },
     {
-        "source_issue": "github_issue_35477",
+        "source_issue": "github_issue_35582",
         "extraction_metadata": {
             "schema_version": "1.1.0",
             "model_version": "llama-3.3-70b-versatile",
-            "timestamp": 1772401551.0551724
+            "timestamp": 1772829108.9001904
         },
         "entities": [
             {
-                "id": "codspeed-hq[bot]",
-                "type": "USER",
-                "name": "codspeed-hq[bot]"
+                "id": "LC-490",
+                "type": "ISSUE",
+                "name": "Issue LC-490"
             },
             {
-                "id": "refresh-model-profiles",
-                "type": "ISSUE",
-                "name": "chore(model-profiles): refresh model profile data"
+                "id": "open-swe/0d382871-81f0-fea7-78b9-a2812b9b797c",
+                "type": "PR",
+                "name": "PR open-swe/0d382871-81f0-fea7-78b9-a2812b9b797c"
+            },
+            {
+                "id": "AI agent",
+                "type": "USER",
+                "name": "AI agent"
             }
         ],
         "claims": [
             {
-                "subject_id": "codspeed-hq[bot]",
-                "relation": "REPORTED",
-                "object_id": "refresh-model-profiles",
+                "subject_id": "open-swe/0d382871-81f0-fea7-78b9-a2812b9b797c",
+                "relation": "RESOLVED",
+                "object_id": "LC-490",
                 "evidence": [
                     {
-                        "source_id": "github_issue_comment",
-                        "excerpt": "Merging this PR will **not alter performance**",
-                        "url": "https://codspeed.io/langchain-ai/langchain/branches/bot%2Frefresh-model-profiles",
-                        "timestamp": "2026-02-28T08:08:54Z"
+                        "source_id": "github_issue",
+                        "excerpt": "Adds support for OpenAI's tool search feature",
+                        "url": "https://github.com/langchain-ai/langchain/issues/123",
+                        "timestamp": "2026-03-05T20:26:35Z"
                     }
                 ],
                 "confidence_score": 0.8
-            }
-        ]
-    },
-    {
-        "source_issue": "github_issue_35476",
-        "extraction_metadata": {
-            "schema_version": "1.1.0",
-            "model_version": "llama-3.3-70b-versatile",
-            "timestamp": 1772401551.0551724
-        },
-        "entities": [
-            {
-                "id": "giulio-leone",
-                "type": "USER",
-                "name": "giulio-leone"
             },
             {
-                "id": "fix(core): RunnableRetry.batch corrupted outputs on partial retry success",
-                "type": "ISSUE",
-                "name": "fix(core): RunnableRetry.batch corrupted outputs on partial retry success"
-            }
-        ],
-        "claims": [
-            {
-                "subject_id": "giulio-leone",
-                "relation": "CHANGED_STATE",
-                "object_id": "fix(core): RunnableRetry.batch corrupted outputs on partial retry success",
-                "evidence": [
-                    {
-                        "source_id": "github_issue_comment",
-                        "excerpt": "Closing in favor of #35485 which has the correct fix.",
-                        "url": "https://github.com/issue/comment",
-                        "timestamp": "2026-02-28T18:18:53Z"
-                    }
-                ],
-                "confidence_score": 1.0
-            }
-        ]
-    },
-    {
-        "source_issue": "github_issue_35475",
-        "extraction_metadata": {
-            "schema_version": "1.1.0",
-            "model_version": "llama-3.3-70b-versatile",
-            "timestamp": 1772401551.0551724
-        },
-        "entities": [
-            {
-                "id": "yangbaechu",
-                "type": "USER",
-                "name": "yangbaechu"
-            },
-            {
-                "id": "RunnableRetry.batch/abatch",
-                "type": "CONCEPT",
-                "name": "RunnableRetry.batch/abatch"
-            }
-        ],
-        "claims": [
-            {
-                "subject_id": "yangbaechu",
+                "subject_id": "AI agent",
                 "relation": "PROPOSED_FIX",
-                "object_id": "RunnableRetry.batch/abatch",
+                "object_id": "open-swe/0d382871-81f0-fea7-78b9-a2812b9b797c",
                 "evidence": [
                     {
-                        "source_id": "comment",
-                        "excerpt": "I\u2019d like to work on this. My intended approach would be to add regression tests next to the existing retry batch tests `test_runnable.py`, then fix the final result assembly for this case.",
-                        "url": "https://github.com/hwchase17/langchain/issues/1234",
-                        "timestamp": "2026-02-28T06:36:39Z"
-                    }
-                ],
-                "confidence_score": 0.8
-            }
-        ]
-    },
-    {
-        "source_issue": "github_issue_35474",
-        "extraction_metadata": {
-            "schema_version": "1.1.0",
-            "model_version": "llama-3.3-70b-versatile",
-            "timestamp": 1772401551.0551724
-        },
-        "entities": [
-            {
-                "id": "jk",
-                "type": "USER",
-                "name": "jk"
-            },
-            {
-                "id": "perf(core)",
-                "type": "ISSUE",
-                "name": "perf(core): optimize callback manager hot paths"
-            },
-            {
-                "id": "codspeed-hq[bot]",
-                "type": "USER",
-                "name": "codspeed-hq[bot]"
-            }
-        ],
-        "claims": [
-            {
-                "subject_id": "jk",
-                "relation": "PROPOSED_FIX",
-                "object_id": "perf(core)",
-                "evidence": [
-                    {
-                        "source_id": "issue-1",
-                        "excerpt": "Optimizes the langchain_core callback manager hot paths identified by profiling langgraph's `react_agent` benchmark, where callback overhead accounts for ~35% of runtime.",
-                        "url": "https://github.com/langchain-ai/langchain/issues/1",
-                        "timestamp": "2026-02-28T05:39:08Z"
-                    }
-                ],
-                "confidence_score": 0.8
-            },
-            {
-                "subject_id": "codspeed-hq[bot]",
-                "relation": "REPORTED",
-                "object_id": "perf(core)",
-                "evidence": [
-                    {
-                        "source_id": "comment-1",
-                        "excerpt": "Merging this PR will **not alter performance**",
-                        "url": "https://github.com/langchain-ai/langchain/issues/1#comment-1",
-                        "timestamp": "2026-02-28T06:13:56Z"
+                        "source_id": "github_issue",
+                        "excerpt": "This PR was authored by an AI agent.",
+                        "url": "https://github.com/langchain-ai/langchain/issues/123",
+                        "timestamp": "2026-03-05T20:26:35Z"
                     }
                 ],
                 "confidence_score": 0.9
@@ -1293,200 +866,59 @@
         ]
     },
     {
-        "source_issue": "github_issue_35473",
+        "source_issue": "github_issue_35581",
         "extraction_metadata": {
             "schema_version": "1.1.0",
             "model_version": "llama-3.3-70b-versatile",
-            "timestamp": 1772401551.0551724
+            "timestamp": 1772829108.9001904
         },
         "entities": [
             {
-                "id": "giulio-leone",
+                "id": "open-swe",
                 "type": "USER",
-                "name": "giulio-leone"
+                "name": "open-swe"
             },
             {
-                "id": "perf(core): use deque for pipeline batch output reassembly in RunnableSequence",
+                "id": "feat(openai)",
                 "type": "ISSUE",
-                "name": "perf(core): use deque for pipeline batch output reassembly in RunnableSequence"
+                "name": "feat(openai): add tool search support with defer_loading via extras"
+            },
+            {
+                "id": "codspeed-hq[bot]",
+                "type": "USER",
+                "name": "codspeed-hq[bot]"
+            },
+            {
+                "id": "langchain-ai/langchain",
+                "type": "COMPONENT",
+                "name": "langchain-ai/langchain"
             }
         ],
         "claims": [
             {
-                "subject_id": "giulio-leone",
-                "relation": "CHANGED_STATE",
-                "object_id": "perf(core): use deque for pipeline batch output reassembly in RunnableSequence",
-                "evidence": [
-                    {
-                        "source_id": "github_comment",
-                        "excerpt": "Closing \u2014 focusing on bug fixes with higher user impact.",
-                        "url": "github_comment_url",
-                        "timestamp": "2026-02-28T19:13:42Z"
-                    }
-                ],
-                "confidence_score": 1.0
-            }
-        ]
-    },
-    {
-        "source_issue": "github_issue_35472",
-        "extraction_metadata": {
-            "schema_version": "1.1.0",
-            "model_version": "llama-3.3-70b-versatile",
-            "timestamp": 1772401551.0551724
-        },
-        "entities": [
-            {
-                "id": "giulio-leone",
-                "type": "USER",
-                "name": "giulio-leone"
-            },
-            {
-                "id": "perf(core): use deque for result reassembly in RunnableRetry batch",
-                "type": "ISSUE",
-                "name": "perf(core): use deque for result reassembly in RunnableRetry batch"
-            }
-        ],
-        "claims": [
-            {
-                "subject_id": "giulio-leone",
-                "relation": "CHANGED_STATE",
-                "object_id": "perf(core): use deque for result reassembly in RunnableRetry batch",
-                "evidence": [
-                    {
-                        "source_id": "github issue comment",
-                        "excerpt": "Closing \u2014 focusing on bug fixes with higher user impact.",
-                        "url": "github issue comment url",
-                        "timestamp": "2026-02-28T19:13:41Z"
-                    }
-                ],
-                "confidence_score": 1.0
-            }
-        ]
-    },
-    {
-        "source_issue": "github_issue_35471",
-        "extraction_metadata": {
-            "schema_version": "1.1.0",
-            "model_version": "llama-3.3-70b-versatile",
-            "timestamp": 1772401551.0551724
-        },
-        "entities": [
-            {
-                "id": "copilot",
-                "type": "USER",
-                "name": "Copilot"
-            },
-            {
-                "id": "giulio-leone",
-                "type": "USER",
-                "name": "giulio-leone"
-            },
-            {
-                "id": "perf(text-splitters)",
-                "type": "ISSUE",
-                "name": "perf(text-splitters)"
-            }
-        ],
-        "claims": [
-            {
-                "subject_id": "Copilot",
+                "subject_id": "open-swe",
                 "relation": "PROPOSED_FIX",
-                "object_id": "perf(text-splitters)",
+                "object_id": "feat(openai)",
                 "evidence": [
                     {
                         "source_id": "issue-123",
-                        "excerpt": "Convert `raw_lines` to a `collections.deque` at the start of `split_text()` and replace all `.pop(0)` calls with `.popleft()`, which is **O(1)** amortised.",
-                        "url": "https://github.com/org/repo/issues/123",
-                        "timestamp": "2026-02-28T04:27:56Z"
+                        "excerpt": "Adds support for OpenAI's tool search feature in `ChatOpenAI`.",
+                        "url": "https://github.com/langchain-ai/langchain/pull/123",
+                        "timestamp": "2026-03-05T20:06:35Z"
                     }
                 ],
                 "confidence_score": 0.8
             },
             {
-                "subject_id": "giulio-leone",
-                "relation": "CHANGED_STATE",
-                "object_id": "perf(text-splitters)",
-                "evidence": [
-                    {
-                        "source_id": "comment-456",
-                        "excerpt": "Closing \u2014 focusing on bug fixes with higher user impact.",
-                        "url": "https://github.com/org/repo/issues/123#issuecomment-456",
-                        "timestamp": "2026-02-28T19:13:39Z"
-                    }
-                ],
-                "confidence_score": 0.9
-            }
-        ]
-    },
-    {
-        "source_issue": "github_issue_35470",
-        "extraction_metadata": {
-            "schema_version": "1.1.0",
-            "model_version": "llama-3.3-70b-versatile",
-            "timestamp": 1772401551.0551724
-        },
-        "entities": [
-            {
-                "id": "langchain",
-                "type": "COMPONENT",
-                "name": "langchain"
-            },
-            {
-                "id": "#35011",
-                "type": "ISSUE",
-                "name": "issue #35011"
-            },
-            {
-                "id": "AgentMiddleware",
-                "type": "COMPONENT",
-                "name": "AgentMiddleware"
-            },
-            {
-                "id": "PIIMiddleware",
-                "type": "COMPONENT",
-                "name": "PIIMiddleware"
-            }
-        ],
-        "claims": [
-            {
-                "subject_id": "langchain",
+                "subject_id": "codspeed-hq[bot]",
                 "relation": "REPORTED",
-                "object_id": "#35011",
+                "object_id": "performance report",
                 "evidence": [
                     {
-                        "source_id": "issue_body",
-                        "excerpt": "This fixes the streaming bypass of middleware guardrails reported in #35011.",
-                        "url": "https://github.com/issue_body",
-                        "timestamp": "2026-02-28T04:15:11Z"
-                    }
-                ],
-                "confidence_score": 0.9
-            },
-            {
-                "subject_id": "AgentMiddleware",
-                "relation": "CHANGED_STATE",
-                "object_id": "guards_output attribute",
-                "evidence": [
-                    {
-                        "source_id": "issue_body",
-                        "excerpt": "AgentMiddleware gets a new guards_output attribute (default False).",
-                        "url": "https://github.com/issue_body",
-                        "timestamp": "2026-02-28T04:15:11Z"
-                    }
-                ],
-                "confidence_score": 0.9
-            },
-            {
-                "subject_id": "PIIMiddleware",
-                "relation": "CHANGED_STATE",
-                "object_id": "wrap_model_call, awrap_model_call, and _process_model_response",
-                "evidence": [
-                    {
-                        "source_id": "issue_body",
-                        "excerpt": "PIIMiddleware sets it when apply_to_output=True.",
-                        "url": "https://github.com/issue_body",
-                        "timestamp": "2026-02-28T04:15:11Z"
+                        "source_id": "comment-123",
+                        "excerpt": "Merging this PR will **not alter performance**",
+                        "url": "https://github.com/langchain-ai/langchain/pull/123#issuecomment-123",
+                        "timestamp": "2026-03-05T20:13:47Z"
                     }
                 ],
                 "confidence_score": 0.9
@@ -1494,84 +926,457 @@
         ]
     },
     {
-        "source_issue": "github_issue_35469",
+        "source_issue": "github_issue_35580",
         "extraction_metadata": {
             "schema_version": "1.1.0",
             "model_version": "llama-3.3-70b-versatile",
-            "timestamp": 1772401551.0551724
+            "timestamp": 1772829108.9001904
         },
         "entities": [
             {
-                "id": "gitbalaji",
-                "type": "USER",
-                "name": "gitbalaji"
+                "id": "langchain-ai",
+                "type": "ORGANIZATION",
+                "name": "LangChain AI"
             },
             {
-                "id": "ccurme",
-                "type": "USER",
-                "name": "ccurme"
+                "id": "openai",
+                "type": "ORGANIZATION",
+                "name": "OpenAI"
             },
             {
-                "id": "mdrxy",
-                "type": "USER",
-                "name": "mdrxy"
-            },
-            {
-                "id": "text-splitters",
-                "type": "COMPONENT",
-                "name": "text-splitters"
-            },
-            {
-                "id": "PR #32325",
-                "type": "ISSUE",
-                "name": "PR #32325"
-            },
-            {
-                "id": "nltk",
+                "id": "tool_search",
                 "type": "CONCEPT",
-                "name": "nltk"
-            },
-            {
-                "id": "spacy",
-                "type": "CONCEPT",
-                "name": "spacy"
-            },
-            {
-                "id": "sentence-transformers",
-                "type": "CONCEPT",
-                "name": "sentence-transformers"
-            },
-            {
-                "id": "konlpy",
-                "type": "CONCEPT",
-                "name": "konlpy"
+                "name": "Tool Search"
             }
         ],
         "claims": [
             {
-                "subject_id": "gitbalaji",
+                "subject_id": "langchain-ai",
                 "relation": "PROPOSED_FIX",
-                "object_id": "fix(text-splitters)",
+                "object_id": "OpenAI chat models integration",
+                "evidence": [
+                    {
+                        "source_id": "github_issue",
+                        "excerpt": "Adds support for OpenAI's tool search feature in the OpenAI chat models integration.",
+                        "url": "https://github.com/langchain-ai/langchain/pull/123",
+                        "timestamp": "2026-03-05T19:37:40Z"
+                    }
+                ],
+                "confidence_score": 0.8
+            }
+        ]
+    },
+    {
+        "source_issue": "github_issue_35579",
+        "extraction_metadata": {
+            "schema_version": "1.1.0",
+            "model_version": "llama-3.3-70b-versatile",
+            "timestamp": 1772829108.9001904
+        },
+        "entities": [
+            {
+                "id": "JiwaniZakir",
+                "type": "USER",
+                "name": "JiwaniZakir"
+            },
+            {
+                "id": "issue-34029",
+                "type": "ISSUE",
+                "name": "issue-34029"
+            },
+            {
+                "id": "codspeed-hq[bot]",
+                "type": "USER",
+                "name": "codspeed-hq[bot]"
+            }
+        ],
+        "claims": [
+            {
+                "subject_id": "JiwaniZakir",
+                "relation": "PROPOSED_FIX",
+                "object_id": "issue-34029",
+                "evidence": [
+                    {
+                        "source_id": "issue-34029",
+                        "excerpt": "This addresses #34029.",
+                        "url": "https://github.com/langchain-ai/langchain/issues/34029",
+                        "timestamp": "2026-03-05T19:29:35Z"
+                    }
+                ],
+                "confidence_score": 0.9
+            },
+            {
+                "subject_id": "codspeed-hq[bot]",
+                "relation": "REPORTED",
+                "object_id": "issue-34029",
+                "evidence": [
+                    {
+                        "source_id": "issue-34029",
+                        "excerpt": "Merging this PR will **not alter performance**",
+                        "url": "https://github.com/langchain-ai/langchain/issues/34029",
+                        "timestamp": "2026-03-05T19:33:42Z"
+                    }
+                ],
+                "confidence_score": 0.8
+            }
+        ]
+    },
+    {
+        "source_issue": "github_issue_35578",
+        "extraction_metadata": {
+            "schema_version": "1.1.0",
+            "model_version": "llama-3.3-70b-versatile",
+            "timestamp": 1772829108.9001904
+        },
+        "entities": [
+            {
+                "id": "feat(openai)",
+                "type": "CONCEPT",
+                "name": "OpenAI"
+            },
+            {
+                "id": "35415",
+                "type": "ISSUE",
+                "name": "Issue #35415"
+            },
+            {
+                "id": "codspeed-hq[bot]",
+                "type": "USER",
+                "name": "codspeed-hq[bot]"
+            }
+        ],
+        "claims": [
+            {
+                "subject_id": "codspeed-hq[bot]",
+                "relation": "REPORTED",
+                "object_id": "feat(openai)",
                 "evidence": [
                     {
                         "source_id": "comment",
-                        "excerpt": "Hey @ccurme @mdrxy \u2014 would appreciate a review when you get a chance. This restores lazy imports for heavy optional dependencies (spacy, nltk, etc.) in `text-splitters` that were accidentally made eager, increasing import time for users who don't use those splitters.",
-                        "url": "https://github.com/langchain/langchain/issues/35437",
-                        "timestamp": "2026-03-01T02:08:17Z"
+                        "excerpt": "Merging this PR will **not alter performance**",
+                        "url": "https://codspeed.io/langchain-ai/langchain/branches/ander-db%3Amaster?utm_source=github&utm_medium=comment-v2&utm_content=button",
+                        "timestamp": "2026-03-05T17:53:06Z"
                     }
                 ],
-                "confidence_score": 0.9
+                "confidence_score": 0.8
             },
             {
-                "subject_id": "PR #32325",
-                "relation": "CHANGED_STATE",
-                "object_id": "text-splitters",
+                "subject_id": "feat(openai)",
+                "relation": "RESOLVED",
+                "object_id": "35415",
                 "evidence": [
                     {
                         "source_id": "issue_body",
-                        "excerpt": "PR #32325 moved these optional dependency imports to module-level `try/except` blocks (to satisfy ruff's `PLC0415` rule).",
-                        "url": "https://github.com/langchain/langchain/issues/35437",
-                        "timestamp": "2026-02-28T01:24:30Z"
+                        "excerpt": "Fixes #35415",
+                        "url": "https://github.com/langchain-ai/langchain/issues/feat(openai)",
+                        "timestamp": "2026-03-05T17:22:49Z"
+                    }
+                ],
+                "confidence_score": 0.9
+            }
+        ]
+    },
+    {
+        "source_issue": "github_issue_35577",
+        "extraction_metadata": {
+            "schema_version": "1.1.0",
+            "model_version": "llama-3.3-70b-versatile",
+            "timestamp": 1772829108.9001904
+        },
+        "entities": [
+            {
+                "id": "codspeed-hq[bot]",
+                "type": "USER",
+                "name": "codspeed-hq[bot]"
+            },
+            {
+                "id": "langchain-ai",
+                "type": "USER",
+                "name": "langchain-ai"
+            },
+            {
+                "id": "fix(anthropic): update integration test",
+                "type": "ISSUE",
+                "name": "fix(anthropic): update integration test"
+            }
+        ],
+        "claims": [
+            {
+                "subject_id": "codspeed-hq[bot]",
+                "relation": "REPORTED",
+                "object_id": "fix(anthropic): update integration test",
+                "evidence": [
+                    {
+                        "source_id": "comment",
+                        "excerpt": "Merging this PR will **not alter performance**",
+                        "url": "https://github.com/langchain-ai/langchain/pull/35544",
+                        "timestamp": "2026-03-05T17:44:20Z"
+                    }
+                ],
+                "confidence_score": 0.8
+            },
+            {
+                "subject_id": "langchain-ai",
+                "relation": "CHANGED_STATE",
+                "object_id": "fix(anthropic): update integration test",
+                "evidence": [
+                    {
+                        "source_id": "issue",
+                        "excerpt": "State: closed",
+                        "url": "https://github.com/langchain-ai/langchain/issues",
+                        "timestamp": "2026-03-05T17:09:10Z"
+                    }
+                ],
+                "confidence_score": 0.9
+            }
+        ]
+    },
+    {
+        "source_issue": "github_issue_35576",
+        "extraction_metadata": {
+            "schema_version": "1.1.0",
+            "model_version": "llama-3.3-70b-versatile",
+            "timestamp": 1772829108.9001904
+        },
+        "entities": [
+            {
+                "id": "Mekopa",
+                "type": "USER",
+                "name": "Mekopa"
+            },
+            {
+                "id": "fix(anthropic): stamp cache_control on system prompt for prompt caching",
+                "type": "ISSUE",
+                "name": "fix(anthropic): stamp cache_control on system prompt for prompt caching"
+            },
+            {
+                "id": "codspeed-hq[bot]",
+                "type": "USER",
+                "name": "codspeed-hq[bot]"
+            },
+            {
+                "id": "Mekopa:fix/system-prompt-cache-control",
+                "type": "ISSUE",
+                "name": "Mekopa:fix/system-prompt-cache-control"
+            }
+        ],
+        "claims": [
+            {
+                "subject_id": "Mekopa",
+                "relation": "PROPOSED_FIX",
+                "object_id": "fix(anthropic): stamp cache_control on system prompt for prompt caching",
+                "evidence": [
+                    {
+                        "source_id": "https://github.com/anthropics/anthropic-cookbook/blob/main/misc/prompt_caching.ipynb",
+                        "excerpt": "After the existing conversation message stamping, also stamp `cache_control` on the last block of the system prompt.",
+                        "url": "https://github.com/anthropics/anthropic-cookbook/blob/main/misc/prompt_caching.ipynb",
+                        "timestamp": "2026-03-05T16:35:05Z"
+                    }
+                ],
+                "confidence_score": 0.8
+            },
+            {
+                "subject_id": "codspeed-hq[bot]",
+                "relation": "REPORTED",
+                "object_id": "Mekopa:fix/system-prompt-cache-control",
+                "evidence": [
+                    {
+                        "source_id": "https://github.com/langchain-ai/langchain/pull/123",
+                        "excerpt": "Merging this PR will **not alter performance**",
+                        "url": "https://github.com/langchain-ai/langchain/pull/123",
+                        "timestamp": "2026-03-05T17:46:09Z"
+                    }
+                ],
+                "confidence_score": 0.9
+            }
+        ]
+    },
+    {
+        "source_issue": "github_issue_35575",
+        "extraction_metadata": {
+            "schema_version": "1.1.0",
+            "model_version": "llama-3.3-70b-versatile",
+            "timestamp": 1772829108.9001904
+        },
+        "entities": [
+            {
+                "id": "eyurtsev",
+                "type": "USER",
+                "name": "eyurtsev"
+            },
+            {
+                "id": "devongenerally-png",
+                "type": "USER",
+                "name": "devongenerally-png"
+            },
+            {
+                "id": "issue_1",
+                "type": "ISSUE",
+                "name": "feat: GovernanceCallbackHandler for deterministic tool authorization"
+            },
+            {
+                "id": "GovernanceCallbackHandler",
+                "type": "CONCEPT",
+                "name": "GovernanceCallbackHandler"
+            }
+        ],
+        "claims": [
+            {
+                "subject_id": "eyurtsev",
+                "relation": "PROPOSED_FIX",
+                "object_id": "GovernanceCallbackHandler",
+                "evidence": [
+                    {
+                        "source_id": "comment_1",
+                        "excerpt": "Use middleware for this pattern rather than callbacks.",
+                        "url": "https://github.com/issue_1",
+                        "timestamp": "2026-03-05T15:25:34Z"
+                    }
+                ],
+                "confidence_score": 0.8
+            },
+            {
+                "subject_id": "devongenerally-png",
+                "relation": "CHANGED_STATE",
+                "object_id": "issue_1",
+                "evidence": [
+                    {
+                        "source_id": "comment_2",
+                        "excerpt": "I'll rework this as a `RunnableConfig`-based middleware",
+                        "url": "https://github.com/issue_1",
+                        "timestamp": "2026-03-05T16:18:15Z"
+                    }
+                ],
+                "confidence_score": 0.9
+            }
+        ]
+    },
+    {
+        "source_issue": "github_issue_35574",
+        "extraction_metadata": {
+            "schema_version": "1.1.0",
+            "model_version": "llama-3.3-70b-versatile",
+            "timestamp": 1772829108.9001904
+        },
+        "entities": [
+            {
+                "id": "SentryNodeAI",
+                "type": "USER",
+                "name": "SentryNodeAI"
+            },
+            {
+                "id": "amelmgn",
+                "type": "USER",
+                "name": "amelmgn"
+            },
+            {
+                "id": "MCP Header Forwarding Failure",
+                "type": "ISSUE",
+                "name": "MCP Header Forwarding Failure"
+            }
+        ],
+        "claims": [
+            {
+                "subject_id": "SentryNodeAI",
+                "relation": "PROPOSED_FIX",
+                "object_id": "MCP Header Forwarding Failure",
+                "evidence": [
+                    {
+                        "source_id": "github_comment",
+                        "excerpt": "add a minimal repro with a single tool call + deterministic headers",
+                        "url": "https://github.com/langchain/langchain/issues/1234",
+                        "timestamp": "2026-03-05T14:23:55Z"
+                    }
+                ],
+                "confidence_score": 0.8
+            },
+            {
+                "subject_id": "amelmgn",
+                "relation": "REPORTED",
+                "object_id": "MCP Header Forwarding Failure",
+                "evidence": [
+                    {
+                        "source_id": "github_issue",
+                        "excerpt": "The LangSmith Agent Builder backend proxy does not forward custom static headers",
+                        "url": "https://github.com/langchain/langchain/issues/1234",
+                        "timestamp": "2026-03-05T10:31:56Z"
+                    }
+                ],
+                "confidence_score": 0.9
+            }
+        ]
+    },
+    {
+        "source_issue": "github_issue_35573",
+        "extraction_metadata": {
+            "schema_version": "1.1.0",
+            "model_version": "llama-3.3-70b-versatile",
+            "timestamp": 1772829108.9001904
+        },
+        "entities": [
+            {
+                "id": "alon-naor-22",
+                "type": "USER",
+                "name": "AlonNaor22"
+            },
+            {
+                "id": "issue-123",
+                "type": "ISSUE",
+                "name": "fix(openai): ensure _generate/_agenerate send stream=False to the API"
+            },
+            {
+                "id": "langchain-ai/langchain",
+                "type": "COMPONENT",
+                "name": "langchain-ai/langchain"
+            }
+        ],
+        "claims": [
+            {
+                "subject_id": "AlonNaor22",
+                "relation": "REPORTED",
+                "object_id": "issue-123",
+                "evidence": [
+                    {
+                        "source_id": "issue-123",
+                        "excerpt": "When `streaming=True` and `disable_streaming=tool_calling`, `_should_stream` correctly routes to `_generate`/`_agenerate` (non-streaming path)",
+                        "url": "https://github.com/langchain-ai/langchain/issues/123",
+                        "timestamp": "2026-03-05T10:20:57Z"
+                    }
+                ],
+                "confidence_score": 0.8
+            }
+        ]
+    },
+    {
+        "source_issue": "github_issue_35572",
+        "extraction_metadata": {
+            "schema_version": "1.1.0",
+            "model_version": "llama-3.3-70b-versatile",
+            "timestamp": 1772829108.9001904
+        },
+        "entities": [
+            {
+                "id": "WeaviateVectorStore",
+                "type": "COMPONENT",
+                "name": "WeaviateVectorStore"
+            },
+            {
+                "id": "user",
+                "type": "USER",
+                "name": "user"
+            }
+        ],
+        "claims": [
+            {
+                "subject_id": "user",
+                "relation": "REPORTED",
+                "object_id": "WeaviateVectorStore",
+                "evidence": [
+                    {
+                        "source_id": "GitHub issue",
+                        "excerpt": "the add_documents / add_texts in WeaviateVectorStore logs errors during indexing but still returns a valid list of chunk IDs",
+                        "url": "https://github.com/user-attachments/assets/b114cd15-d7a3-483f-b7f5-982dfbd6fa29",
+                        "timestamp": "2026-03-05T10:16:57Z"
                     }
                 ],
                 "confidence_score": 0.8
