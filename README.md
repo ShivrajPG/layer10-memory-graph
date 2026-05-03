@@ -6,7 +6,7 @@ An enterprise-grade, grounded organizational memory system. This pipeline ingest
 
 ## I. System Architecture
 
-![Layer10_memory_system (4)](https://github.com/user-attachments/assets/e7576fce-ffd1-4b29-af69-f06a373e218f)
+![memory_system (4)](https://github.com/user-attachments/assets/e7576fce-ffd1-4b29-af69-f06a373e218f)
 
 The system is designed with a clear separation between the Minimum Viable Product (MVP) built for this assignment (represented by solid lines) and the Layer10 Enterprise Scaling vision (represented by dotted lines).
 
@@ -54,9 +54,9 @@ The Agentic UI (`step5_ui.py`) translates natural language into verified answers
 
 ---
 
-## V. Layer10 Considerations (Enterprise Adaptation)
+## V. Considerations (Enterprise Adaptation)
 
-To adapt this MVP for Layer10’s target environment (Slack, Teams, Jira, Email), the architecture must scale:
+To adapt this MVP for target environment (Slack, Teams, Jira, Email), the architecture must scale:
 
 * **Unstructured + Structured Fusion:** 
   Jira and Linear tickets would be modeled as structural `(:Artifact)` nodes. Unstructured Slack/Teams threads discussing those tickets would be extracted and explicitly connected via `(:SlackThread)-[REFERS_TO]->(:Artifact)` relationships, bridging conversational context to formal tracking systems.
